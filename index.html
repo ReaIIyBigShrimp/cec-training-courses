@@ -1,415 +1,469 @@
 <!doctype html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>JSON and AJAX examplet</title>
-<script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
- <link href="https://www.cheshireeast.gov.uk/templates/default/css/100-bootstrap-v2.css" rel="stylesheet" type="text/css" />
- <!--   <link href="https://www.cheshireeast.gov.uk/templates/default/css/200-cec-styles.css" rel="stylesheet" type="text/css" /> -->
 
-<!-- <link href="https://www.cheshireeast.gov.uk/templates/default/css/system/cec-app-styles.css" rel="stylesheet" type="text/css" /> -->
+<head>
+    <meta charset="utf-8">
+    <title>JSON and AJAX examplet</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <link href="https://www.cheshireeast.gov.uk/templates/default/css/100-bootstrap-v2.css" rel="stylesheet"
+        type="text/css" />
+    <!--   <link href="https://www.cheshireeast.gov.uk/templates/default/css/200-cec-styles.css" rel="stylesheet" type="text/css" /> -->
+
+    <!-- <link href="https://www.cheshireeast.gov.uk/templates/default/css/system/cec-app-styles.css" rel="stylesheet" type="text/css" /> -->
     <style>
         /* *+* TABLES *+* */
 
-.usr_TableDefault {
-  margin-bottom: 15px;
-}
+        .usr_TableDefault {
+            margin-bottom: 15px;
+        }
 
-table.usr_TableDefault th {
-  background-color: #e2d3e6;
-  font-weight: bold;
-}
+        table.usr_TableDefault th {
+            background-color: #e2d3e6;
+            font-weight: bold;
+        }
 
-table.usr_TableDefault, table.usr_TableDefault tr, table.usr_TableDefault td, table.usr_TableDefault th {
-  border: 1px solid #444;
-  padding: 8px;
-}
+        table.usr_TableDefault,
+        table.usr_TableDefault tr,
+        table.usr_TableDefault td,
+        table.usr_TableDefault th {
+            border: 1px solid #444;
+            padding: 8px;
+        }
 
-table.usr_TableDefault tr:hover td {
-  background-color: #f3f3f3;
-}
+        table.usr_TableDefault tr:hover td {
+            background-color: #f3f3f3;
+        }
+
         .usr_CaptionHide {
-    display: none;
-    visibility: hidden;
-}
+            display: none;
+            visibility: hidden;
+        }
 
         /* Accessible accordian */
-.access-acc-container {
-    text-align: left;
-    margin: 10px auto 30px auto;
-    position: relative;
-}
-.access-acc-container article p {
-    margin: 10px 15px 15px 15px;
-}
-.access-acc-container article ul, .access-acc-container article ol {
-    list-style-position: inside;
-}
-.access-acc-container input[type=checkbox], .access-acc-container input[type=radio] {
-    background-color: transparent;
-    border: 1px solid transparent;
-    height: 1px;
-    position: absolute;
-    width: 1px;
-    margin: 4px 0 0 0;
-    outline: none;
-}
-.access-acc-container input[type=checkbox] + label, .access-acc-container input[type=radio] + label {
-    background: #eaedef;
-    border-bottom: 1px solid #fff;
-    color: #0b0c0c;
-    cursor: pointer;
-    display: block;
-    font-size: 18px;
-    font-weight: normal;
-    line-height: 32px;
-    padding: 10px 15px;
-    position: relative;
-    z-index: 20;
-}
-.access-acc-container input[type=checkbox] + label:before, .access-acc-container input[type=checkbox] + label:after {
-    display: inline-block;
-    font-family: FontAwesome;
-    font-size: 24px;
-    font-style: normal;
-    font-weight: normal;
-    text-decoration: inherit;
-}
+        .access-acc-container {
+            text-align: left;
+            margin: 10px auto 30px auto;
+            position: relative;
+        }
 
-/* view and close message next to the chevron */
-.access-acc-container input[type=checkbox] + label:after {
-	 content: "view";
-	 position: absolute;
-	 right: 38px;
-	 top: 8px;
-	 font-size: 80%;
-	 font-family: inherit;
-	 color: #303030;
-}
-.access-acc-container input[type=checkbox] + label:hover:after {
-    color: #fff;
-}
-.access-acc-container input[type=checkbox]:checked + label:after {
- content: "close";
- transform: rotate(0deg)!important;
- transition: transform 0.5s;
- right: 36px;
-}
-.access-acc-container input[type=checkbox]:checked + label:after {
-  color: #fff;
-}
-@media (max-width: 720px){
-.access-acc-container input[type=checkbox] + label:after {
- display: none;
-}
-}
-/* Spacebar message before the accordion starts */
-.access-acc-container:before {
-content: "Keyboard navigation: use the spacebar to display further information.";
-}
-.access-acc-container input[type=checkbox] + label:first-of-type {
-	margin-top: 20px;
-}
+        .access-acc-container article p {
+            margin: 10px 15px 15px 15px;
+        }
 
-.access-acc-container input[type=checkbox] + label:hover,  .access-acc-container input[type=radio] + label:hover {
-    background: #0075b0;
-    color: #fff;
-}
-.access-acc-container input[type=checkbox]:checked + label,  .access-acc-container input[type=radio]:checked + label {
-    background: #0075b0;
-        color: #fff;
-}
-.access-acc-container input[type=checkbox]:focus + label,  .access-acc-container input[type=radio]:focus + label {
-    background: #0075b0;
-        color: #fff;
-}
-.access-acc-container input[type=checkbox]:checked + label:hover,  .access-acc-container input[type=radio]:checked + label:hover {
-    background: #0075b0;
-        color: #fff;
-}
-.access-acc-container input[type=checkbox]:checked + label:after,  .access-acc-container input[type=radio]:checked + label:after {
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg);
-}
-.access-acc-container input[type=checkbox] + label + article {
-    display: none;
-    /* display: none; - Content is ignored by screen readers, additionally stops tabbing through hidden content */
+        .access-acc-container article ul,
+        .access-acc-container article ol {
+            list-style-position: inside;
+        }
 
-    height: 0;
-    max-height: 0;
-    overflow: hidden;/* 0, 0, hidden; - Content is ignored by screen readers, but tab key still steps through hidden elements */
-}
-.access-acc-container input[type=checkbox]:checked + label + article, .access-acc-container input[type=radio]:checked + label + article {
-    display: block;
-    height: auto;
-    max-height: 2000px;
-    -webkit-transition: all 1.5s ease-in-out;
-    -moz-transition: all 1.5s ease-in-out;
-    -o-transition: all 1.5s ease-in-out;
-    -ms-transition: all 1.5s ease-in-out;
-    transition: all 1.5s ease-in-out;
-}
-.access-acc-container span.glyphicon.glyphicon-menu-down {
-	float: right;
-	top: 6px;
-}
-section.access-acc-container ul {    
-list-style-position: outside;
-padding-left: 23px;
-margin: 13px 0x;
-}
-section.access-acc-container li {
-margin-bottom: 15px;
-}
-    .removeListStyle ul{
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-.courseHeading {
-    border-top: 1px solid #000;
-    border-right: 1px solid #000;
-    border-left: 1px solid #000;
-    padding: 10px;
-    margin-bottom: 0;
-    background-color: #663399;
-    color: #fff;
-}
-.setTHWidth {
-width: 30%;
-}
-/* Accessible accordion */
-.access-acc-container:first-of-type:before {
-    content: "Keyboard navigation: use the spacebar to display further information.";
-    font-size: 90%;
-    color: #6e2585;
-}
-.access-acc-container:before {
-    content: "";
-}
-.access-acc-container {
-	margin: 0;
-}
+        .access-acc-container input[type=checkbox],
+        .access-acc-container input[type=radio] {
+            background-color: transparent;
+            border: 1px solid transparent;
+            height: 1px;
+            position: absolute;
+            width: 1px;
+            margin: 4px 0 0 0;
+            outline: none;
+        }
+
+        .access-acc-container input[type=checkbox]+label,
+        .access-acc-container input[type=radio]+label {
+            background: #eaedef;
+            border-bottom: 1px solid #fff;
+            color: #0b0c0c;
+            cursor: pointer;
+            display: block;
+            font-size: 18px;
+            font-weight: normal;
+            line-height: 32px;
+            padding: 10px 15px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .access-acc-container input[type=checkbox]+label:before,
+        .access-acc-container input[type=checkbox]+label:after {
+            display: inline-block;
+            font-family: FontAwesome;
+            font-size: 24px;
+            font-style: normal;
+            font-weight: normal;
+            text-decoration: inherit;
+        }
+
+        /* view and close message next to the chevron */
+        .access-acc-container input[type=checkbox]+label:after {
+            content: "view";
+            position: absolute;
+            right: 38px;
+            top: 8px;
+            font-size: 80%;
+            font-family: inherit;
+            color: #303030;
+        }
+
+        .access-acc-container input[type=checkbox]+label:hover:after {
+            color: #fff;
+        }
+
+        .access-acc-container input[type=checkbox]:checked+label:after {
+            content: "close";
+            transform: rotate(0deg) !important;
+            transition: transform 0.5s;
+            right: 36px;
+        }
+
+        .access-acc-container input[type=checkbox]:checked+label:after {
+            color: #fff;
+        }
+
+        @media (max-width: 720px) {
+            .access-acc-container input[type=checkbox]+label:after {
+                display: none;
+            }
+        }
+
+        /* Spacebar message before the accordion starts */
+        .access-acc-container:before {
+            content: "Keyboard navigation: use the spacebar to display further information.";
+        }
+
+        .access-acc-container input[type=checkbox]+label:first-of-type {
+            margin-top: 20px;
+        }
+
+        .access-acc-container input[type=checkbox]+label:hover,
+        .access-acc-container input[type=radio]+label:hover {
+            background: #0075b0;
+            color: #fff;
+        }
+
+        .access-acc-container input[type=checkbox]:checked+label,
+        .access-acc-container input[type=radio]:checked+label {
+            background: #0075b0;
+            color: #fff;
+        }
+
+        .access-acc-container input[type=checkbox]:focus+label,
+        .access-acc-container input[type=radio]:focus+label {
+            background: #0075b0;
+            color: #fff;
+        }
+
+        .access-acc-container input[type=checkbox]:checked+label:hover,
+        .access-acc-container input[type=radio]:checked+label:hover {
+            background: #0075b0;
+            color: #fff;
+        }
+
+        .access-acc-container input[type=checkbox]:checked+label:after,
+        .access-acc-container input[type=radio]:checked+label:after {
+            -webkit-transform: rotate(90deg);
+            -moz-transform: rotate(90deg);
+            -ms-transform: rotate(90deg);
+            -o-transform: rotate(90deg);
+            transform: rotate(90deg);
+        }
+
+        .access-acc-container input[type=checkbox]+label+article {
+            display: none;
+            /* display: none; - Content is ignored by screen readers, additionally stops tabbing through hidden content */
+
+            height: 0;
+            max-height: 0;
+            overflow: hidden;
+            /* 0, 0, hidden; - Content is ignored by screen readers, but tab key still steps through hidden elements */
+        }
+
+        .access-acc-container input[type=checkbox]:checked+label+article,
+        .access-acc-container input[type=radio]:checked+label+article {
+            display: block;
+            height: auto;
+            max-height: 2000px;
+            -webkit-transition: all 1.5s ease-in-out;
+            -moz-transition: all 1.5s ease-in-out;
+            -o-transition: all 1.5s ease-in-out;
+            -ms-transition: all 1.5s ease-in-out;
+            transition: all 1.5s ease-in-out;
+        }
+
+        .access-acc-container span.glyphicon.glyphicon-menu-down {
+            float: right;
+            top: 6px;
+        }
+
+        section.access-acc-container ul {
+            list-style-position: outside;
+            padding-left: 23px;
+            margin: 13px 0x;
+        }
+
+        section.access-acc-container li {
+            margin-bottom: 15px;
+        }
+
+        .removeListStyle ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .courseHeading {
+            border-top: 1px solid #000;
+            border-right: 1px solid #000;
+            border-left: 1px solid #000;
+            padding: 10px;
+            margin-bottom: 0;
+            background-color: #663399;
+            color: #fff;
+        }
+
+        .setTHWidth {
+            width: 30%;
+        }
+
+        /* Accessible accordion */
+        .access-acc-container:first-of-type:before {
+            content: "Keyboard navigation: use the spacebar to display further information.";
+            font-size: 90%;
+            color: #6e2585;
+        }
+
+        .access-acc-container:before {
+            content: "";
+        }
+
+        .access-acc-container {
+            margin: 0;
+        }
+
         .icon-chevron-down {
-    float: right;
-    margin-top: 7px;
-}
-</style>
+            float: right;
+            margin-top: 7px;
+        }
+    </style>
 </head>
 
 <body>
-<header>
-  <h1>Test events in Cheshire East</h1>
-</header>
+    <header>
+        <h1>Test events in Cheshire East</h1>
+    </header>
 
     <div class="row">
         <div class="span8">
             <div id="hrTrainingCourse"></div>
-<script>
 
-		
-$.ajax({
-    url: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Centranet/contentTypes/trainingCourses/entries/?accessToken=QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I&LinkDepth=1",
-    dataType: 'json',
-    type: "GET",
-    cache: false,
-    error: function(xhrError, status, description) { // handle ajax errors here and inform
-        $("#searching").hide();
-        alert('Ajax call resulted in an error: ' + xhrError + " " + status + " " + description);
-    },
-    success: function(data) {
-        $(data.items).each(function(index, value) {
-            $("#hrTrainingCourse").append(generateContent(value));
-        });
-    }
-});
-    
-    
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-// generate the app div from code - the return statement returns a single application section
-function generateContent(data) {
-    
+    <script>
+        /* $.ajax({
+            url: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Centranet/contentTypes/trainingCourses/entries/?accessToken=QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I&LinkDepth=1",
+            dataType: 'json',
+            type: "GET",
+            cache: false,
+            error: function (xhrError, status, description) { // handle ajax errors here and inform
+                $("#searching").hide();
+                alert('Ajax call resulted in an error: ' + xhrError + " " + status + " " + description);
+            },
+            success: function (data) {
+                $(data.items).each(function (index, value) {
+                    $("#hrTrainingCourse").append(generateContent(value));
+                });
+            }
+        }); */
 
-      //Check through each entry to see if it is the correct category/topic. --> 
- // var getTopic = data.courseOracleCategory.name;
-	//var exists = getTopic.filter(s => s.Contains("Health and safety")); 
-	//If true - then display --> 
-	//if(exists == true){
-    
-    
-      //Check through each entry to see if it is the correct category/topic. --> 
-  //var getTopic =  data.courseOracleCategory;
- //console.log(data.courseOracleCategory.name);
+        axios.get(
+                'https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Centranet/contentTypes/trainingCourses/entries/?accessToken=QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I&LinkDepth=1'
+                )
+            .then(function (response) {
+                // handle success
+                /* console.log(response);
+                response.data.items.forEach(function(item){
+                    console.log(item);
+                    console.log(generateContent(item));
+                    document.getElementById('hrTrainingCourse').appendChild(new DOMParser().parseFromString(generateContent(item), 'text/html'));
+                }); */
 
-
-    
-        
-    var section = $("<section class='access-acc-container'>");
-    var accInput = $("<input id='"+ data.sys.id + "' type='checkbox' name='acc2' />");
-    section.append(accInput);
-    var accLabel =$("<label for='" + data.sys.id + "'>" + data.title +"<i class='icon-chevron-down'>&nbsp;</i></label>");
-    section.append(accLabel);
-    var accArticle = $("<article>");
-    section.append(accArticle);
-    var accHeading = $("<h2 class='courseHeading'>" + data.title + "</h2>");
-    accArticle.append(accHeading);
-    
-    
-    var accTable = $("<table class='usr_TableDefault'>");
-    accArticle.append(accTable);
-    var accCaption = $("<caption class='usr_CaptionHide'>Training courses</caption>");
-    accTable.append(accCaption);
-    var accTableBody = $("<tbody>");
-    accTable.append(accTableBody);
-    
-    var accTableRow = $("<tr>");
-    accTable.append(accTableRow);
-    var accTableHeader = $("<th class='setTHWidth'>Audience</th>");
-    accTableRow.append(accTableHeader);
-    var accTableData = $("<td>");
-    accTableRow.append(accTableData);
-    var audience = $("<span>" + data.audience + "</span>");
-    accTableData.append(audience);
-    
-        
-    var accTableRow = $("<tr>");
-    accTable.append(accTableRow);
-    var accTableHeader = $("<th class='setTHWidth'>Who the course is for</th>");
-    accTableRow.append(accTableHeader);
-    var accTableData = $("<td>");
-    accTableRow.append(accTableData);
-    var whoTheCourseIsFor = $("<span>"+ data.whoTheCourseIsFor +"</span>");
-    accTableData.append(whoTheCourseIsFor)
-    
-    //Create a variable to contain the string for 'aim'
-    var courseAim = $("<span>" + data.aim + "</span>");
-    
-    var accTableRow = $("<tr>");
-    accTable.append(accTableRow);
-    var accTableHeader = $("<th class='setTHWidth'>Aim</th>");
-    accTableRow.append(accTableHeader);
-    var accTableData = $("<td>");
-    accTableRow.append(accTableData);
-    accTableData.append(courseAim)
-    
-    
-    //Create a variable to contain the string for 'whatTheCourseCovers'
-    var courseCovers = $("<span>" + data.whatTheCourseCovers + "</span>");
-    
-    var accTableRow = $("<tr>");
-    accTable.append(accTableRow);
-    var accTableHeader = $("<th class='setTHWidth'>What the course covers</th>");
-    accTableRow.append(accTableHeader);
-    var accTableData = $("<td>");
-    accTableRow.append(accTableData);
-    accTableData.append(courseCovers)
-    
-    
-    var accTableRow = $("<tr>");
-    accTable.append(accTableRow);
-    var accTableHeader = $("<th class='setTHWidth'>Format</th>");
-    accTableRow.append(accTableHeader);
-    var accTableData = $("<td>");
-    accTableRow.append(accTableData);
-    var format = $("<span>"+ data.format +"</span>");
-    accTableData.append(format)
-    
-    
-    var accTableRow = $("<tr>");
-    accTable.append(accTableRow);
-    var accTableHeader = $("<th class='setTHWidth'>Certification and qualifications</th>");
-    accTableRow.append(accTableHeader);
-    var accTableData = $("<td>");
-    accTableRow.append(accTableData);
-    var certificationAndQualifications = $("<span>"+ data.certificationAndQualifications +"</span>");
-    accTableData.append(certificationAndQualifications)
-    
-    
-    var accTableRow = $("<tr>");
-    accTable.append(accTableRow);
-    var accTableHeader = $("<th class='setTHWidth'>Cost</th>");
-    accTableRow.append(accTableHeader);
-    var accTableData = $("<td>");
-    accTableRow.append(accTableData);
-    var cost = $("<span>"+ data.cost +"</span>");
-    accTableData.append(cost)
-    
-    
-    //Create a variable to contain the string for 'courseDatesAndLocations'
-    var courseDatesAndLocations = $("<span>" + data.courseDatesAndLocations + "</span>");
-    
-    var accTableRow = $("<tr>");
-    accTable.append(accTableRow);
-    var accTableHeader = $("<th class='setTHWidth'>Course dates and locations</th>");
-    accTableRow.append(accTableHeader);
-    var accTableData = $("<td>");
-    accTableRow.append(accTableData);
-    accTableData.append(courseDatesAndLocations)
-    
-    
-    //Create a variable to contain the string for 'courseDatesAndLocations'
-    var howToBookOnThisCourse = $("<span>" + data.howToBookOnThisCourse + "</span>");
-    
-    var accTableRow = $("<tr>");
-    accTable.append(accTableRow);
-    var accTableHeader = $("<th class='setTHWidth'>How to book on this course</th>");
-    accTableRow.append(accTableHeader);
-    var accTableData = $("<td>");
-    accTableRow.append(accTableData);
-    accTableData.append(howToBookOnThisCourse)
-    
-    
-    var accTableRow = $("<tr>");
-    accTable.append(accTableRow);
-    var accTableHeader = $("<th class='setTHWidth'>Oracle booking link</th>");
-    accTableRow.append(accTableHeader);
-    var accTableData = $("<td>");
-    accTableRow.append(accTableData);
-    var bookingLink = $("<a href='https://centranet.cheshireeast.gov.uk/how-do-i/it-computers-and-telephones/oracle-learning-management-olm.aspx'>Oracle Learning Management</a>");
-    accTableData.append(bookingLink)
-    
-    
-    var accTableRow = $("<tr>");
-    accTable.append(accTableRow);
-    var accTableHeader = $("<th class='setTHWidth'>Course contact</th>");
-    accTableRow.append(accTableHeader);
-    var accTableData = $("<td>");
-    accTableRow.append(accTableData);
-    var courseContact = $("<a href='mailto:trainingbookings@cheshireeast.gov.uk'>E-mail - Workforce Development Team</a><span> or call 01270 686273.</span>");
-    accTableData.append(courseContact)
-    
-    
-    return section;
-   // }
-    
-}
+                $(response.data.items).each(function (index, value) {
+                    $("#hrTrainingCourse").append(generateContent(value));
+                });
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
 
 
-	</script>
-          </div> </div>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script>
-    //const axios = require('axios');
 
-// Make a request for a user with a given ID
-axios.get('https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Centranet/contentTypes/trainingCourses/entries/?accessToken=QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I&LinkDepth=1')
-  .then(function (response) {
-    // handle success
-    console.log(response);
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  })
-  .then(function () {
-    // always executed
-  });
-</script>
+        // generate the app div from code - the return statement returns a single application section
+        function generateContent(data) {
+
+
+            //Check through each entry to see if it is the correct category/topic. --> 
+            // var getTopic = data.courseOracleCategory.name;
+            //var exists = getTopic.filter(s => s.Contains("Health and safety")); 
+            //If true - then display --> 
+            //if(exists == true){
+
+
+            //Check through each entry to see if it is the correct category/topic. --> 
+            //var getTopic =  data.courseOracleCategory;
+            //console.log(data.courseOracleCategory.name);
+
+
+
+
+            var section = $("<section class='access-acc-container'>");
+            var accInput = $("<input id='" + data.sys.id + "' type='checkbox' name='acc2' />");
+            section.append(accInput);
+            var accLabel = $("<label for='" + data.sys.id + "'>" + data.title +
+                "<i class='icon-chevron-down'>&nbsp;</i></label>");
+            section.append(accLabel);
+            var accArticle = $("<article>");
+            section.append(accArticle);
+            var accHeading = $("<h2 class='courseHeading'>" + data.title + "</h2>");
+            accArticle.append(accHeading);
+
+
+            var accTable = $("<table class='usr_TableDefault'>");
+            accArticle.append(accTable);
+            var accCaption = $("<caption class='usr_CaptionHide'>Training courses</caption>");
+            accTable.append(accCaption);
+            var accTableBody = $("<tbody>");
+            accTable.append(accTableBody);
+
+            var accTableRow = $("<tr>");
+            accTable.append(accTableRow);
+            var accTableHeader = $("<th class='setTHWidth'>Audience</th>");
+            accTableRow.append(accTableHeader);
+            var accTableData = $("<td>");
+            accTableRow.append(accTableData);
+            var audience = $("<span>" + data.audience + "</span>");
+            accTableData.append(audience);
+
+
+            var accTableRow = $("<tr>");
+            accTable.append(accTableRow);
+            var accTableHeader = $("<th class='setTHWidth'>Who the course is for</th>");
+            accTableRow.append(accTableHeader);
+            var accTableData = $("<td>");
+            accTableRow.append(accTableData);
+            var whoTheCourseIsFor = $("<span>" + data.whoTheCourseIsFor + "</span>");
+            accTableData.append(whoTheCourseIsFor)
+
+            //Create a variable to contain the string for 'aim'
+            var courseAim = $("<span>" + data.aim + "</span>");
+
+            var accTableRow = $("<tr>");
+            accTable.append(accTableRow);
+            var accTableHeader = $("<th class='setTHWidth'>Aim</th>");
+            accTableRow.append(accTableHeader);
+            var accTableData = $("<td>");
+            accTableRow.append(accTableData);
+            accTableData.append(courseAim)
+
+
+            //Create a variable to contain the string for 'whatTheCourseCovers'
+            var courseCovers = $("<span>" + data.whatTheCourseCovers + "</span>");
+
+            var accTableRow = $("<tr>");
+            accTable.append(accTableRow);
+            var accTableHeader = $("<th class='setTHWidth'>What the course covers</th>");
+            accTableRow.append(accTableHeader);
+            var accTableData = $("<td>");
+            accTableRow.append(accTableData);
+            accTableData.append(courseCovers)
+
+
+            var accTableRow = $("<tr>");
+            accTable.append(accTableRow);
+            var accTableHeader = $("<th class='setTHWidth'>Format</th>");
+            accTableRow.append(accTableHeader);
+            var accTableData = $("<td>");
+            accTableRow.append(accTableData);
+            var format = $("<span>" + data.format + "</span>");
+            accTableData.append(format)
+
+
+            var accTableRow = $("<tr>");
+            accTable.append(accTableRow);
+            var accTableHeader = $("<th class='setTHWidth'>Certification and qualifications</th>");
+            accTableRow.append(accTableHeader);
+            var accTableData = $("<td>");
+            accTableRow.append(accTableData);
+            var certificationAndQualifications = $("<span>" + data.certificationAndQualifications + "</span>");
+            accTableData.append(certificationAndQualifications)
+
+
+            var accTableRow = $("<tr>");
+            accTable.append(accTableRow);
+            var accTableHeader = $("<th class='setTHWidth'>Cost</th>");
+            accTableRow.append(accTableHeader);
+            var accTableData = $("<td>");
+            accTableRow.append(accTableData);
+            var cost = $("<span>" + data.cost + "</span>");
+            accTableData.append(cost)
+
+
+            //Create a variable to contain the string for 'courseDatesAndLocations'
+            var courseDatesAndLocations = $("<span>" + data.courseDatesAndLocations + "</span>");
+
+            var accTableRow = $("<tr>");
+            accTable.append(accTableRow);
+            var accTableHeader = $("<th class='setTHWidth'>Course dates and locations</th>");
+            accTableRow.append(accTableHeader);
+            var accTableData = $("<td>");
+            accTableRow.append(accTableData);
+            accTableData.append(courseDatesAndLocations)
+
+
+            //Create a variable to contain the string for 'courseDatesAndLocations'
+            var howToBookOnThisCourse = $("<span>" + data.howToBookOnThisCourse + "</span>");
+
+            var accTableRow = $("<tr>");
+            accTable.append(accTableRow);
+            var accTableHeader = $("<th class='setTHWidth'>How to book on this course</th>");
+            accTableRow.append(accTableHeader);
+            var accTableData = $("<td>");
+            accTableRow.append(accTableData);
+            accTableData.append(howToBookOnThisCourse)
+
+
+            var accTableRow = $("<tr>");
+            accTable.append(accTableRow);
+            var accTableHeader = $("<th class='setTHWidth'>Oracle booking link</th>");
+            accTableRow.append(accTableHeader);
+            var accTableData = $("<td>");
+            accTableRow.append(accTableData);
+            var bookingLink = $(
+                "<a href='https://centranet.cheshireeast.gov.uk/how-do-i/it-computers-and-telephones/oracle-learning-management-olm.aspx'>Oracle Learning Management</a>"
+                );
+            accTableData.append(bookingLink)
+
+
+            var accTableRow = $("<tr>");
+            accTable.append(accTableRow);
+            var accTableHeader = $("<th class='setTHWidth'>Course contact</th>");
+            accTableRow.append(accTableHeader);
+            var accTableData = $("<td>");
+            accTableRow.append(accTableData);
+            var courseContact = $(
+                "<a href='mailto:trainingbookings@cheshireeast.gov.uk'>E-mail - Workforce Development Team</a><span> or call 01270 686273.</span>"
+                );
+            accTableData.append(courseContact)
+
+
+            return section;
+            // }
+
+        }
+    </script>
 </body>
+
 </html>
