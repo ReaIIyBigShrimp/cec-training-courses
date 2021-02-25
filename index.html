@@ -289,6 +289,7 @@
 
                 $(response.data.items).each(function (index, value) {
                     $("#hrTrainingCourse").append(generateContent(value));
+                    //console.log(value.sys.id);
                 });
             })
             .catch(function (error) {
@@ -320,11 +321,43 @@
 
 
             var section = $("<section class='access-acc-container'>");
+            // Create section
+            var section2 = document.createElement('section');
+            //console.log(section2);
+            section2.classList.add('access-acc-container');
+            //console.log(section2);
+            var accInput2 = document.createElement('input');
+            //console.log(accInput2);
+            accInput2.id = data.sys.id;
+            //console.log(accInput2);
+            accInput2.setAttribute('type', 'checkbox');
+            //console.log(accInput2);
+            accInput2.setAttribute('name', 'acc2');
+            //console.log(accInput2);
+
+            section2.appendChild(accInput2);
+            //console.log(section2);
+
+            var accLabel2 = document.createElement('label');
+            //accInput2.htmlFor = 'data.sys.id';
+            accLabel2.setAttribute('for', data.sys.id);
+            //console.log(accLabel2);
+            accLabel2.appendChild(document.createTextNode(data.title));
+            
+            // Add icon
+            var accLabel2Icon = document.createElement('i');
+            accLabel2Icon.classList.add('icon-chevron-down');
+            //console.log(accLabel2Icon);
+            accLabel2.appendChild(accLabel2Icon);
+            console.log(section2);
+            section2.appendChild(accLabel2);
+
+
             var accInput = $("<input id='" + data.sys.id + "' type='checkbox' name='acc2' />");
             section.append(accInput);
             var accLabel = $("<label for='" + data.sys.id + "'>" + data.title +
-                "<i class='icon-chevron-down'>&nbsp;</i></label>");
-            section.append(accLabel);
+                "<i class='icon-chevron-down'>&nbsp;</i></label>"); // Done
+            section.append(accLabel); // Done
             var accArticle = $("<article>");
             section.append(accArticle);
             var accHeading = $("<h2 class='courseHeading'>" + data.title + "</h2>");
