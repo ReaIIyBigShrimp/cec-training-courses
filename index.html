@@ -280,17 +280,15 @@
                 )
             .then(function (response) {
                 // handle success
-                /* console.log(response);
+                console.log(response);
                 response.data.items.forEach(function(item){
-                    console.log(item);
-                    console.log(generateContent(item));
-                    document.getElementById('hrTrainingCourse').appendChild(new DOMParser().parseFromString(generateContent(item), 'text/html'));
-                }); */
+                    document.getElementById('hrTrainingCourse').appendChild( generateContent(item) );
+                });
 
-                $(response.data.items).each(function (index, value) {
+                /* $(response.data.items).each(function (index, value) {
                     $("#hrTrainingCourse").append(generateContent(value));
                     //console.log(value.sys.id);
-                });
+                }); */
             })
             .catch(function (error) {
                 // handle error
@@ -317,10 +315,6 @@
             //var getTopic =  data.courseOracleCategory;
             //console.log(data.courseOracleCategory.name);
 
-
-
-
-            var section = $("<section class='access-acc-container'>");
             // Create section
             var section2 = document.createElement('section');
             //console.log(section2);
@@ -538,148 +532,8 @@
             accTableRow11.appendChild(accTableData11);
 
             console.log(section2);
-            
-            // jQuery - to convert to plain JS(above)
-            var accInput = $("<input id='" + data.sys.id + "' type='checkbox' name='acc2' />");
-            section.append(accInput);
-            var accLabel = $("<label for='" + data.sys.id + "'>" + data.title +
-                "<i class='icon-chevron-down'>&nbsp;</i></label>"); // Done
-            section.append(accLabel); // Done
-            var accArticle = $("<article>");
-            section.append(accArticle); // Done
-            var accHeading = $("<h2 class='courseHeading'>" + data.title + "</h2>");
-            accArticle.append(accHeading); // Done
 
-
-            var accTable = $("<table class='usr_TableDefault'>");
-            accArticle.append(accTable); // Done
-            var accCaption = $("<caption class='usr_CaptionHide'>Training courses</caption>");
-            accTable.append(accCaption); // Done
-            var accTableBody = $("<tbody>");
-            accTable.append(accTableBody); // Done
-
-            var accTableRow = $("<tr>"); // Done
-            accTable.append(accTableRow); 
-            var accTableHeader = $("<th class='setTHWidth'>Audience</th>");
-            accTableRow.append(accTableHeader); // Done
-            var accTableData = $("<td>");
-            accTableRow.append(accTableData); // Done
-            var audience = $("<span>" + data.audience + "</span>");
-            accTableData.append(audience); // Done
-
-
-            var accTableRow = $("<tr>");
-            accTable.append(accTableRow);
-            var accTableHeader = $("<th class='setTHWidth'>Who the course is for</th>");
-            accTableRow.append(accTableHeader); // Done
-            var accTableData = $("<td>");
-            accTableRow.append(accTableData);
-            var whoTheCourseIsFor = $("<span>" + data.whoTheCourseIsFor + "</span>");
-            accTableData.append(whoTheCourseIsFor) // Done
-
-            //Create a variable to contain the string for 'aim'
-            var courseAim = $("<span>" + data.aim + "</span>");
-
-            var accTableRow = $("<tr>");
-            accTable.append(accTableRow);
-            var accTableHeader = $("<th class='setTHWidth'>Aim</th>");
-            accTableRow.append(accTableHeader);
-            var accTableData = $("<td>");
-            accTableRow.append(accTableData);
-            accTableData.append(courseAim) // Done
-
-
-            //Create a variable to contain the string for 'whatTheCourseCovers'
-            var courseCovers = $("<span>" + data.whatTheCourseCovers + "</span>");
-
-            var accTableRow = $("<tr>");
-            accTable.append(accTableRow);
-            var accTableHeader = $("<th class='setTHWidth'>What the course covers</th>");
-            accTableRow.append(accTableHeader);
-            var accTableData = $("<td>");
-            accTableRow.append(accTableData);
-            accTableData.append(courseCovers)
-
-
-            var accTableRow = $("<tr>");
-            accTable.append(accTableRow);
-            var accTableHeader = $("<th class='setTHWidth'>Format</th>");
-            accTableRow.append(accTableHeader);
-            var accTableData = $("<td>");
-            accTableRow.append(accTableData);
-            var format = $("<span>" + data.format + "</span>");
-            accTableData.append(format) // Done
-
-
-            var accTableRow = $("<tr>");
-            accTable.append(accTableRow);
-            var accTableHeader = $("<th class='setTHWidth'>Certification and qualifications</th>");
-            accTableRow.append(accTableHeader);
-            var accTableData = $("<td>");
-            accTableRow.append(accTableData);
-            var certificationAndQualifications = $("<span>" + data.certificationAndQualifications + "</span>");
-            accTableData.append(certificationAndQualifications) // Done
-
-
-            var accTableRow = $("<tr>");
-            accTable.append(accTableRow);
-            var accTableHeader = $("<th class='setTHWidth'>Cost</th>");
-            accTableRow.append(accTableHeader);
-            var accTableData = $("<td>");
-            accTableRow.append(accTableData);
-            var cost = $("<span>" + data.cost + "</span>");
-            accTableData.append(cost)
-
-
-            //Create a variable to contain the string for 'courseDatesAndLocations'
-            var courseDatesAndLocations = $("<span>" + data.courseDatesAndLocations + "</span>");
-
-            var accTableRow = $("<tr>");
-            accTable.append(accTableRow);
-            var accTableHeader = $("<th class='setTHWidth'>Course dates and locations</th>");
-            accTableRow.append(accTableHeader);
-            var accTableData = $("<td>");
-            accTableRow.append(accTableData);
-            accTableData.append(courseDatesAndLocations) // Done
-
-
-            //Create a variable to contain the string for 'courseDatesAndLocations'
-            var howToBookOnThisCourse = $("<span>" + data.howToBookOnThisCourse + "</span>");
-
-            var accTableRow = $("<tr>");
-            accTable.append(accTableRow);
-            var accTableHeader = $("<th class='setTHWidth'>How to book on this course</th>");
-            accTableRow.append(accTableHeader);
-            var accTableData = $("<td>");
-            accTableRow.append(accTableData);
-            accTableData.append(howToBookOnThisCourse) // Done
-
-
-            var accTableRow = $("<tr>");
-            accTable.append(accTableRow);
-            var accTableHeader = $("<th class='setTHWidth'>Oracle booking link</th>");
-            accTableRow.append(accTableHeader);
-            var accTableData = $("<td>");
-            accTableRow.append(accTableData);
-            var bookingLink = $(
-                "<a href='https://centranet.cheshireeast.gov.uk/how-do-i/it-computers-and-telephones/oracle-learning-management-olm.aspx'>Oracle Learning Management</a>"
-                );
-            accTableData.append(bookingLink)
-
-
-            var accTableRow = $("<tr>");
-            accTable.append(accTableRow);
-            var accTableHeader = $("<th class='setTHWidth'>Course contact</th>");
-            accTableRow.append(accTableHeader);
-            var accTableData = $("<td>");
-            accTableRow.append(accTableData);
-            var courseContact = $(
-                "<a href='mailto:trainingbookings@cheshireeast.gov.uk'>E-mail - Workforce Development Team</a><span> or call 01270 686273.</span>"
-                );
-            accTableData.append(courseContact)
-
-
-            return section;
+            return section2;
             // }
 
         }
