@@ -13,6 +13,8 @@ table, table td, table th {
     border: 1px solid #cacaca;
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>  -->
 </head>
 
 <body>
@@ -20,14 +22,17 @@ table, table td, table th {
 <div id="contentTypesContainer">
   <section>
     <div v-if="loading">
-      <div class="spinner-grow" role="status"> <span class="sr-only">Loading...</span> </div>
+      <div class="spinner-grow" role="status"> <!-- <span class="sr-only">Loading...</span> --> </div>
     </div>
     <div class="mt-1 mb-1">
         <button v-on:click="previousPage" type="button" class="btn btn-outline-dark" v-bind:class="{ disabled: currentPageIndex == 0 }">Previous</button>
         <button v-on:click="nextPage" type="button" class="btn btn-outline-dark">Next</button>
     </div>
-    
-    <table>
+    <div v-if="loading == false">
+        <p>Total results: {{ totalCount }}</p>
+        <p>Current page: {{ currentPageIndex+1 }}</p>
+    </div>
+    <table v-if="loading == false">
       <thead>
         <tr>
           <th scope="col">Name</th>
@@ -62,20 +67,23 @@ table, table td, table th {
     </table>
   </section>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>  -->
+
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
 <script>
         var app = new Vue({
             el: '#contentTypesContainer',
             data() {
                 return {
-                    url: 'https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Website/contentTypes/ecologicalConsultants/entries/?accessToken=QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I&LinkDepth=5&pageSize=5',
+                    url: 'https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Website/contentTypes/ecologicalConsultants/entries/',
+                    accessToken: 'QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I',
+                    linkDepth: 5,
+                    pageSize: 10,
+                    includePageCount: true,
                     items: null,
                     loading: true,
                     errored: false,
                     currentPageIndex: 0,
-                    totalResults: null
+                    totalCount: null
                 }
             },
             filters: {
@@ -84,58 +92,65 @@ table, table td, table th {
                 }
             },
             methods: {
+                getBaseUrl: function(){
+                    var url = this.url
+                    // Add access token to URL
+                    url = url + '?accessToken='+this.accessToken;
+                    // Add link depth to URL
+                    url = url + '&linkDepth='+this.linkDepth;
+                    // Add page size to URL
+                    url = url + '&pageSize=' + this.pageSize;
+                    // Add page count to URL
+                    if (this.includePageCount) {
+                        url = url + '&totalCount';
+                    }
+                    console.log(url);
+
+                    return url;
+                },
                 previousPage: function(){
                     if(this.currentPageIndex > 0) {
-                        this.previousPageIndex = this.currentPageIndex - 1;
-
-                        // Append previous page to URL
-                        var plainUrl = this.url;
-                        var newUrl = plainUrl+'&pageIndex='+(this.currentPageIndex-1);
-
+                        this.loading = true;
+                        var prevPageUrl = this.getBaseUrl()+'&pageIndex='+(this.currentPageIndex-1);
                         axios
                         .get(
-                            newUrl
+                            prevPageUrl
                         )
                         .then(response => {
                             this.items = response.data.items;
                             this.loading = false;
                             console.log("Success!!");
                             this.currentPageIndex = this.currentPageIndex - 1;
+                            this.loading = false;
                         })
                         .catch(error => {
                             console.log(error)
                             this.errored = true
                         })
                         .finally(() => this.loading = false)
-
                     }
 
                     
 
                     // call API with new URL with page index set
                     console.log('Previous page button...');
-                    console.log(newUrl);
                 },
                 nextPage: function() {
-                    if(this.currentPageIndex > 1) {
-                        this.nextPageIndex = this.currentPageIndex + 1;
-                    }
-
-                    // Append previous page to URL
-                    var plainUrl = this.url;
-                    var newUrl = plainUrl+'&pageIndex='+(this.currentPageIndex+1);
-                    console.log(newUrl);
-
+                    // Set loading
+                    this.loading = true;
                     // API call with pageIndex parameter
+                    var nextPageUrl = this.getBaseUrl()+'&pageIndex='+(this.currentPageIndex+1);
+
                     axios
                     .get(
-                        newUrl
+                        nextPageUrl
                     )
                     .then(response => {
                         this.items = response.data.items;
                         this.loading = false;
                         console.log("Success!!");
                         this.currentPageIndex = this.currentPageIndex + 1;
+                        this.loading = false;
                     })
                     .catch(error => {
                         console.log(error)
@@ -147,14 +162,18 @@ table, table td, table th {
                 }
             },
             mounted() {
+                //this.getBaseUrl();
+
                 axios
                     .get(
-                        this.url
+                        this.getBaseUrl()
                     )
                     .then(response => {
                         this.items = response.data.items;
                         this.loading = false;
+                        this.totalCount = response.data.totalCount;
                         console.log("Success!!");
+                        console.log(response);
                     })
                     .catch(error => {
                         console.log(error)
