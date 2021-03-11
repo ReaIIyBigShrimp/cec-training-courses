@@ -21,16 +21,24 @@ table, table td, table th {
 <h1>Ecological Consultants in Cheshire East</h1>
 <div id="contentTypesContainer">
   <section>
-    <div v-if="loading">
-      <div class="spinner-grow" role="status"> <!-- <span class="sr-only">Loading...</span> --> </div>
-    </div>
+    
     <div class="mt-1 mb-1">
-        <button v-on:click="previousPage" type="button" class="btn btn-outline-dark" v-bind:class="{ disabled: currentPageIndex == 0 }">Previous</button>
-        <button v-on:click="nextPage" type="button" class="btn btn-outline-dark">Next</button>
+        <!-- <button v-on:click="previousPage" type="button" class="btn btn-outline-dark" v-bind:class="{ disabled: currentPageIndex == 0 }">Previous</button>
+        <button v-on:click="nextPage" type="button" class="btn btn-outline-dark">Next</button> -->
+        <nav aria-label="Results data navigation">
+            <ul class="pagination">
+                <li class="page-item" v-bind:class="{ disabled: currentPageIndex == 0 }"><button class="page-link" v-on:click="previousPage">Previous</button></li>
+                <li v-for="pageBtn in pageBtns" class="page-item"><button class="page-link" v-on:click="goToPage(pageBtn.pageNum)" >{{ pageBtn.pageNum }}</button></li>
+                <li class="page-item"><button class="page-link" v-on:click="nextPage">Next</button></li>
+            </ul>
+        </nav>
     </div>
     <div v-if="loading == false">
         <p>Total results: {{ totalCount }}</p>
         <p>Current page: {{ currentPageIndex+1 }}</p>
+    </div>
+    <div v-if="loading">
+        <div class="spinner-grow" role="status"> <!-- <span class="sr-only">Loading...</span> --> </div>
     </div>
     <table v-if="loading == false">
       <thead>
@@ -74,16 +82,23 @@ table, table td, table th {
             el: '#contentTypesContainer',
             data() {
                 return {
+                    // Content Type Settings
+                    // Please change the below settings when using a different content type
+                    // In most cases, the 
                     url: 'https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Website/contentTypes/ecologicalConsultants/entries/',
-                    accessToken: 'QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I',
-                    linkDepth: 5,
-                    pageSize: 10,
-                    includePageCount: true,
+                    accessToken: 'QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I', // API access token, replace if expired
+                    linkDepth: 5, // leave at 5 if unsure
+                    pageSize: 10, // number of results per page
+
+                    // Do not edit below
+                    includePageCount: true, // leave at true
                     items: null,
                     loading: true,
-                    errored: false,
+                    errored: false, 
                     currentPageIndex: 0,
-                    totalCount: null
+                    totalCount: null,
+                    pageCount: null, 
+                    pageBtns: [] // Array for page pagination buttons
                 }
             },
             filters: {
@@ -104,6 +119,7 @@ table, table td, table th {
                     if (this.includePageCount) {
                         url = url + '&totalCount';
                     }
+                    url = url + '&pageCount';
                     console.log(url);
 
                     return url;
@@ -129,27 +145,53 @@ table, table td, table th {
                         })
                         .finally(() => this.loading = false)
                     }
-
-                    
-
                     // call API with new URL with page index set
                     console.log('Previous page button...');
                 },
                 nextPage: function() {
-                    // Set loading
-                    this.loading = true;
-                    // API call with pageIndex parameter
-                    var nextPageUrl = this.getBaseUrl()+'&pageIndex='+(this.currentPageIndex+1);
+                    // Check if next page exceeds page count
+                    if (this.currentPageIndex+1 >= this.pageCount) {
+                         // Set loading
+                        this.loading = true;
+                        // API call with pageIndex parameter
+                        var nextPageUrl = this.getBaseUrl()+'&pageIndex='+(this.currentPageIndex+1);
+
+                        axios
+                        .get(
+                            nextPageUrl
+                        )
+                        .then(response => {
+                            this.items = response.data.items;
+                            this.loading = false;
+                            console.log("Success!!");
+                            this.currentPageIndex = this.currentPageIndex + 1;
+                            this.loading = false;
+                        })
+                        .catch(error => {
+                            console.log(error)
+                            this.errored = true
+                        })
+                        .finally(() => this.loading = false)
+
+                        console.log("Next page button...");
+                    }
+                   
+                },
+                goToPage: function(pageNum) {
+
+                    var goToPageUrl = this.getBaseUrl()+'&pageIndex='+(pageNum-1);
+                    console.log('Page URL:');
+                    console.log(goToPageUrl);
 
                     axios
                     .get(
-                        nextPageUrl
+                        goToPageUrl
                     )
                     .then(response => {
                         this.items = response.data.items;
                         this.loading = false;
                         console.log("Success!!");
-                        this.currentPageIndex = this.currentPageIndex + 1;
+                        this.currentPageIndex = pageNum-1;
                         this.loading = false;
                     })
                     .catch(error => {
@@ -157,8 +199,17 @@ table, table td, table th {
                         this.errored = true
                     })
                     .finally(() => this.loading = false)
-
-                    console.log("Next page button...");
+                },
+                generatePaginationBtns: function() {
+                    for (let index = 0; index < this.pageCount; index++) {
+                        this.pageBtns.push({pageNum: (index + 1)});
+                        console.log(this.pageCount);
+                        //console.log(element);
+                    }
+                    console.log(this.pageBtns);
+                    this.pageBtns.forEach(element => {
+                        console.log(element.pageNum);
+                    });
                 }
             },
             mounted() {
@@ -172,6 +223,8 @@ table, table td, table th {
                         this.items = response.data.items;
                         this.loading = false;
                         this.totalCount = response.data.totalCount;
+                        this.pageCount = response.data.pageCount;
+                        this.generatePaginationBtns();
                         console.log("Success!!");
                         console.log(response);
                     })
