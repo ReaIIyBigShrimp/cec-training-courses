@@ -43,6 +43,9 @@
             <div class="input-group-append">
                 <button type="button" class="btn btn-outline-secondary" type="button" v-on:click="searchContentType(searchTerm)" id="contentTypeSearchBtn">Search</button>
             </div>
+            <div v-if="searchAlert" class="alert alert-secondary mt-2" role="alert">
+                Please enter a search term.
+            </div>
         </div>
         <div v-if="showPaginationTop" class="mt-1 mb-1"> <!-- Will show if the showPaginationTop is set to 'true' -->
             <nav role="navigation" aria-label="Results data navigation"> <!-- Pagination buttons above results -->
@@ -205,8 +208,11 @@
                     pageCount: null, // container for total page count for API call, value used for pagination
                     pageBtns: [], // Array for page pagination buttons
 
+                    contentType: contentType,
+
                     // Search
-                    searchTerm: ""
+                    searchTerm: "",
+                    searchAlert: false
                     
                 }
             },
@@ -331,18 +337,38 @@
                 searchContentType: function (searchTermValue) {
                     console.log(searchTermValue);
 
+                    if (searchTermValue === "") {
+                        this.searchAlert = true;
+                        return null
+                    } else {
+                        this.searchAlert = false;
+                    }
+
                     // Field 1
                     let field1 = 'Name';
                     // Field 2
                     let field2 = 'Address';
 
                     let fieldsToSearch = this.searchFields;
-                    // Create array of objects with search fields
-                    for (let index = 0; index < fieldsToSearch.length; index++) {
-                        const element = fieldsToSearch[index];
-                        console.log();
-                        
-                    }
+                    
+
+                    let arrayOfFields = this.searchFields;
+
+                    // Array to add to query
+                    let orArray = [];
+
+                    arrayOfFields.forEach(element => {
+                        console.log(element);
+                        let objectToAppend = new Object({
+                            "field": element,
+                            "contains": searchTermValue
+                        });
+                        console.log(objectToAppend);
+
+                        orArray.push(objectToAppend);
+                    });
+
+                    console.log(arrayOfFields);
 
                     let query = 
                                 [{
@@ -375,7 +401,7 @@
                         (this.getSearchUrl())+"search?where="+encoded ,
                         {
                             params: {
-                                contentTypeId: "ecologicalConsultants",
+                                contentTypeId: this.contentType,
                                 accessToken: this.accessToken,
                                 pageSize: this.pageSize,
                                 pageIndex: 0,
