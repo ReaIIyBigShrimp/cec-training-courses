@@ -189,13 +189,8 @@
                     url: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Website/contentTypes/"+contentType+"/entries/",
                     searchUrl: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/"+projectId+"/entries/",
 
-                    //Search fields for search
-                    // To delete, to make dynamic
-                    searchField1: "consultantTitle",
-                    searchField2: "street",
-                    searchField3: "", // Leave empty if not wanting to search
-
-                    searchFields: ["consultantTitle","street","supportingInformation"], 
+                    // Add search fields to search against. 
+                    searchFields: ["consultantTitle","street","supportingInformation"], // These can be found within Contensis Content Modelling(API name for the field).
 
                     // **DO NOT EDIT BELOW**
                     numOfPaginationBtns: 0, // number of buttons for paginating the results. Set to 0 to show all.
@@ -212,7 +207,7 @@
 
                     // Search
                     searchTerm: "",
-                    searchAlert: false
+                    searchAlert: false // Used to check whether to show the 'Please enter a search term alert'. Leave as false.
                     
                 }
             },
@@ -363,31 +358,20 @@
                             "field": element,
                             "contains": searchTermValue
                         });
-                        console.log(objectToAppend);
-
                         orArray.push(objectToAppend);
                     });
 
-                    console.log(arrayOfFields);
+                    console.log(orArray);
 
                     let query = 
                                 [{
-                                    "or": [
-                                        {
-                                            "field": this.searchField1,
-                                            "contains": searchTermValue
-                                        },
-                                        {
-                                            "field": this.searchField2,
-                                            "contains": searchTermValue
-                                        },
-                                        {
-                                            "field": "supportingInformation",
-                                            "contains": searchTermValue
-                                        }
-                                        // supportingInformation
-                                    ]
-                                }];
+                                    "or": orArray
+                                },
+                                {
+                                    "field": "sys.versionStatus",
+                                    "equalTo": "published"
+                                }
+                            ];
                     
                     const uri = JSON.stringify(query);
 
