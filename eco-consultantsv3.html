@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Ecological Consultants</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
@@ -27,7 +28,7 @@
         .page-link:hover {cursor: pointer;}
 
         .input-group.mb-3.content-type-search {
-            max-width: 300px;
+            max-width: 400px;
         }
     </style>
     <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script> -->
@@ -42,6 +43,7 @@
             <input type="text" class="form-control" placeholder="Type here..." v-model="searchTerm" aria-label="Recipient's username" aria-describedby="basic-addon2" id="contentTypeSearchInput">
             <div class="input-group-append">
                 <button type="button" class="btn btn-outline-secondary" type="button" v-on:click="searchContentType(searchTerm)" id="contentTypeSearchBtn">Search</button>
+                <button v-if="searchTerm.length > 1" class="btn btn-outline-secondary" type="button" v-on:click="resetSearch">Clear Search</button>
             </div>
             <div v-if="searchAlert" class="alert alert-secondary mt-2" role="alert">
                 Please enter a search term.
@@ -408,6 +410,10 @@
                         this.errored = true
                     })
                     .finally(() => this.loading = false)
+                },
+                resetSearch: function() {
+                    this.searchTerm = "";
+                    this.goToPage(1);
                 }
             },
             mounted() {
