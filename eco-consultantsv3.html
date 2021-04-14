@@ -339,12 +339,13 @@
                     }
                 },
                 searchContentType: function (searchTermValue) {
-                    console.log(searchTermValue);
+                    
 
                     if (searchTermValue === "") {
                         this.searchAlert = true;
                         return null
                     } else {
+                        this.loading = true;
                         this.searchAlert = false;
                     }
 
@@ -398,7 +399,8 @@
                                 accessToken: this.accessToken,
                                 pageSize: this.pageSize,
                                 pageIndex: 0,
-                                linkDepth: 5
+                                linkDepth: 5,
+                                order: this.ordering
 
                             }
                         }
