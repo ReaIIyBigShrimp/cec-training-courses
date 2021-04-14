@@ -27,7 +27,7 @@
         .page-link {color: #1d1d1d;}
         .page-link:hover {cursor: pointer;}
 
-        .input-group.mb-3.content-type-search {
+        .input-group.mb-3.content-type-search, .search-error-messages {
             max-width: 400px;
         }
     </style>
@@ -43,8 +43,10 @@
             <input type="text" class="form-control" placeholder="Type here..." v-model="searchTerm" aria-label="Recipient's username" aria-describedby="basic-addon2" id="contentTypeSearchInput">
             <div class="input-group-append">
                 <button type="button" class="btn btn-outline-secondary" type="button" v-on:click="searchContentType(searchTerm)" id="contentTypeSearchBtn">Search</button>
-                <button v-if="searchTerm.length > 1" class="btn btn-outline-secondary" type="button" v-on:click="resetSearch">Clear Search</button>
+                <button v-if="searchTerm.length > 0" class="btn btn-outline-secondary" type="button" v-on:click="resetSearch">Clear Search</button>
             </div>
+        </div>
+        <div v-if="showSearch" class="search-error-messages">
             <div v-if="searchAlert" class="alert alert-secondary mt-2" role="alert">
                 Please enter a search term.
             </div>
@@ -307,7 +309,8 @@
                         .then(response => {
                             this.items = response.data.items;
                             this.loading = false;
-
+                            this.totalCount = response.data.totalCount;
+                            this.pageCount = response.data.pageCount;
                             console.log("Success!!");
                             this.currentPageIndex = pageNum - 1;
                             this.generatePaginationBtns(this.currentPageIndex);
@@ -414,6 +417,7 @@
                 resetSearch: function() {
                     this.searchTerm = "";
                     this.goToPage(1);
+                    this.generatePaginationBtns(this.currentPageIndex);
                 }
             },
             mounted() {
