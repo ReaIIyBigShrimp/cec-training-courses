@@ -189,6 +189,8 @@
 
                     showSearch: true, // Toggle to show/hide the search box
 
+                    ordering: "consultantTitle", // set the field to order by. Set to id of field(e.g. "consultantTitle"). To reverse order, add '-'(e.g. "-consultantTitle").
+
                     // Advanced Settings
                     url: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Website/contentTypes/"+contentType+"/entries/",
                     searchUrl: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/"+projectId+"/entries/",
@@ -235,6 +237,8 @@
                     url = url + '&linkDepth=' + this.linkDepth;
                     // Add page size to URL
                     url = url + '&pageSize=' + this.pageSize;
+
+                    url = url + '&order=' + this.ordering;
                     // Add page count to URL
                     if (this.includePageCount) {
                         url = url + '&totalCount';
