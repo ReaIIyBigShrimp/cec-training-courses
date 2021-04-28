@@ -31,12 +31,12 @@
             max-width: 400px;
         }
     </style>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2"></script> -->
 </head>
 
 <body>
-    <h1>Ecological Consultants in Cheshire East</h1>
+    <h1>What Waste Goes Where</h1>
     
     <div id="contentTypesContainer"> <!-- ID for this element must match the created VUE object instance -->
         <div v-if="showSearch" class="input-group mb-3 content-type-search">
@@ -50,6 +50,36 @@
             <div v-if="searchAlert" class="alert alert-secondary mt-2" role="alert">
                 Please enter a search term.
             </div>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="binOptionCheckbox" id="anyBinCheckbox" v-on:click="setBinOption('any')">
+            <label class="form-check-label" for="anyBinCheckbox">
+                Any
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="binOptionCheckbox" id="blackBinCheckbox" v-on:click="setBinOption('black')">
+            <label class="form-check-label" for="blackBinCheckbox">
+                Black household waste bin
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="binOptionCheckbox" id="silverBinCheckbox" v-on:click="setBinOption('silver')">
+            <label class="form-check-label" for="silverBinCheckbox">
+                Silver household waste bin
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="binOptionCheckbox" id="greenBinCheckbox" v-on:click="setBinOption('green')">
+            <label class="form-check-label" for="greenBinCheckbox">
+                Green or brown garden bin
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="binOptionCheckbox" id="otherBinCheckbox" v-on:click="setBinOption('other')">
+            <label class="form-check-label" for="otherBinCheckbox">
+                Other
+            </label>
         </div>
         <div v-if="showPaginationTop" class="mt-1 mb-1"> <!-- Will show if the showPaginationTop is set to 'true' -->
             <nav role="navigation" aria-label="Results data navigation"> <!-- Pagination buttons above results -->
@@ -105,6 +135,7 @@
                         <td v-html="item.solution">
                             
                         </td>
+                        <td>{{ item.binOption[0] }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -195,8 +226,10 @@
 
                     // Search
                     searchTerm: "",
-                    searchAlert: false // Used to check whether to show the 'Please enter a search term alert'. Leave as false.
+                    searchAlert: false, // Used to check whether to show the 'Please enter a search term alert'. Leave as false.
                     
+                    // Bin option
+                    binOption: ""
                 }
             },
             filters: {
@@ -354,18 +387,59 @@
                     });
 
                     console.log(orArray);
-
-                    let query = 
-                                [{
-                                    "or": orArray
-                                },
-                                {
-                                    "field": "sys.versionStatus",
-                                    "equalTo": "published"
-                                }
-                            ];
                     
-                    const uri = JSON.stringify(query);
+                    let binString = "";                    
+                    // Bin string
+                    switch (this.binOption) {
+                        case "black":
+                            binString = "Black household waste bin";
+                            break;
+                        case "silver":
+                            binString = "Silver grey recycling bin"
+                            break;
+                        case "green":
+                            binString = "Green or brown garden bin"
+                            break;
+                        case "other":
+                            binString = "Other";
+                            break;
+                        default:
+                            binString = "";
+                            break;
+                    }
+
+
+                    let binQuery = 
+                            [{
+                                        "field": "binOption",
+                                        "equalTo": binString
+                                    },
+                                    {
+                                    "or": orArray
+                                    },
+                                    {
+                                        "field": "sys.versionStatus",
+                                        "equalTo": "published"
+                                    }
+                                ]
+
+                    let query = [
+                                    {
+                                        "or": orArray
+                                    },
+                                    {
+                                        "field": "sys.versionStatus",
+                                        "equalTo": "published"
+                                    }
+                                ];
+
+                    let uri;
+                    
+                    if (this.binOption.length > 0) {
+                        uri = JSON.stringify(binQuery);
+                    } else {
+                        uri = JSON.stringify(query);
+                    }
 
                     const encoded = encodeURIComponent(uri);
                     console.log("Encoded component...");
@@ -406,6 +480,13 @@
                     this.searchTerm = "";
                     this.goToPage(1);
                     this.generatePaginationBtns(this.currentPageIndex);
+                },
+                setBinOption: function(bin) {
+                    if (bin != 'any') {
+                        this.binOption = bin;
+                    } else {
+                        this.binOption = "";
+                    }
                 }
             },
             mounted() {
