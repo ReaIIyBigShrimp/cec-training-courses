@@ -1,0 +1,457 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Representations</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <style>
+        table p {
+            margin-bottom: 0;
+        }
+
+        table,
+        table td,
+        table th {
+            border: 1px solid #cacaca;
+        }
+
+        .api-results-info p {
+            margin: 0;
+            display: inline-block;
+            font-size: small;
+        }
+
+        .page-link {
+            color: #1d1d1d;
+        }
+
+        .page-link:hover {
+            cursor: pointer;
+        }
+
+        .input-group.mb-3.content-type-search,
+        .search-error-messages {
+            max-width: 400px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2"></script> -->
+</head>
+
+<body>
+    <h1>Representations</h1>
+
+    <div id="contentTypesContainer">
+        <!-- ID for this element must match the created VUE object instance -->
+        <div v-if="showSearch" class="input-group mb-3 content-type-search">
+
+
+            <input type="text" class="form-control" placeholder="Type here..." v-model="searchTerm"
+                aria-label="Search term input" id="contentTypeSearchInput"><label for="contentTypeSearchInput"
+                class="hidden">Search term</label>
+
+
+            <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" v-on:click="searchContentType(searchTerm)"
+                    id="contentTypeSearchBtn">Search</button>
+                <button v-if="searchTerm.length > 0" class="btn btn-outline-secondary" type="button"
+                    v-on:click="resetSearch">Clear Search</button>
+            </div>
+            <div v-if="searchAlert" class="alert alert-secondary mt-2" role="alert">
+                Please enter a search term.
+            </div>
+        </div>
+        <div v-if="showPaginationTop" class="mt-1 mb-1" style="margin-top: 30px;">
+            <!-- Will show if the showPaginationTop is set to 'true' -->
+            <nav aria-label="Results data navigation">
+                <!-- Pagination buttons above results -->
+
+                <div>
+                    <ul class="pagination">
+                        <li class="page-item" v-bind:class="{ disabled: currentPageIndex == 0 || loading }"><button
+                                class="page-link" v-on:click="previousPage">Previous</button></li>
+                        <li v-if="showFirstLastBtns" class="page-item">
+                            <!-- Can be set to show/hide by setting the showFirstLastBtns to true/false -->
+                            <button class="page-link" href="#" aria-label="Next" v-on:click="goToPage(1)">
+                                <span aria-hidden="true">&laquo;</span></button>
+
+                        </li>
+                        <li v-if="showPageBtns" v-for="pageBtn in pageBtns" class="page-item"
+                            v-bind:class="{ active: currentPageIndex == pageBtn.pageNum - 1 }"><a class="page-link"
+                                v-on:click="goToPage(pageBtn.pageNum)">{{ pageBtn.pageNum }}</a></li>
+                        <!-- Numbered pagination buttons. Can be hidden/shown by toggling showPageBtns to true/false -->
+                        <li v-if="showFirstLastBtns" class="page-item">
+                            <!-- Can be set to show/hide by setting the showFirstLastBtns to true/false -->
+                            <a class="page-link" href="#" aria-label="Next" v-on:click="goToPage(pageCount)">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" v-bind:class="{ disabled: currentPageIndex+1 == pageCount || loading }">
+                            <a class="page-link" v-on:click="nextPage">Next</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+            <div v-if="loading == false" class="api-results-info">
+                <p>Total results: <strong>{{ totalCount }}</strong></p>
+                <p>Current page: <strong>{{ currentPageIndex+1 }}</strong></p>
+            </div>
+        </div>
+        <div v-if="loading">
+            <div class="spinner-grow" role="status">
+                <!-- <span class="sr-only">Loading...</span> -->
+            </div>
+        </div>
+
+
+        <!-- User editable region -->
+
+        <!-- Define your content here -->
+        <div class="table-responsive">
+
+            <table class="usr_TableDefault rep-table">
+                <caption class="usr_CaptionHide">Local Plan Examination - representations</caption>
+                <tbody>
+                    <tr>
+                        <th scope="col">Representor Name</th>
+                        <th scope="col">Representor ID</th>
+                        <th scope="col">Agent Name</th>
+                        <th scope="col">Agent ID</th>
+                        <th scope="col">SADPD version</th>
+                        <th scope="col">Representation Document</th>
+                    </tr>
+                    <tr v-for="item in items">
+                        <td> {{ item.representorName }} </td>
+                        <td> {{ item.representorID }} </td>
+                        <td>{{ item.agentName }}</td>
+                        <td> {{ item.agentID }} </td>
+                        <td>{{ item.sadpdVersion }}</td>
+                        <td>
+                            <p><a v-bind:href="item.representationDocument.sys.uri"> <span
+                                        v-html="item.representationDocumentName"></span></a></p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- End of user editable region -->
+
+        <!-- Bottom navigation -->
+        <!-- **DO NOT EDIT** -->
+        <div v-if="showPaginationBottom" class="mt-1 mb-1">
+            <nav aria-label="Results data navigation">
+                <ul class="pagination mb-0">
+                    <li class="page-item" v-bind:class="{ disabled: currentPageIndex == 0 }"><a class="page-link"
+                            v-on:click="previousPage">Previous</a></li>
+                    <li v-if="showFirstLastBtns" class="page-item">
+                        <a class="page-link" href="#" aria-label="Next" v-on:click="goToPage(1)">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li v-if="showPageBtns" v-for="pageBtn in pageBtns" class="page-item"
+                        v-bind:class="{ active: currentPageIndex == pageBtn.pageNum - 1 }"><a class="page-link"
+                            v-on:click="goToPage(pageBtn.pageNum)">{{ pageBtn.pageNum }}</a></li>
+                    <li v-if="showFirstLastBtns" class="page-item">
+                        <a class="page-link" href="#" aria-label="Next" v-on:click="goToPage(pageCount)">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" v-bind:class="{ disabled: currentPageIndex+1 == pageCount }"><a
+                            class="page-link" v-on:click="nextPage">Next</a></li>
+                </ul>
+            </nav>
+            <div v-if="loading == false" class="api-results-info">
+                <p>Total results: <strong>{{ totalCount }}</strong></p>
+                <p>Current page: <strong>{{ currentPageIndex+1 }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#contentTypesContainer',
+            data() {
+                // Content Type Settings
+                // Please change the below settings when using a different content type
+                // In most cases, the properties below will be only the settings to change here before rendering the content above, using the following syntax(example): {{ item.consultantTitle }} within the HTML.
+                let contentType = "localPlanRepresentations";
+                let projectId = "website";
+
+                // Search settings
+
+                return {
+                    // Content Type Settings (Continued)
+                    accessToken: 'QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I', // API access token, replace if expired
+                    linkDepth: 5, // leave at 5 if unsure.
+                    pageSize: 100, // number of results per page. Do not leave blank
+
+                    // Optional settings
+                    showPageBtns: true, // If set to false, the page buttons will be hidden and instead just display the 'Previous' and 'Next' buttons
+                    showFirstLastBtns: false, // Toggle to show/hide the '<<' and '>>' buttons
+
+                    showPaginationTop: true, // Toggle to show/hide the top pagination buttons
+                    showPaginationBottom: true, // Toggle to show/hide the top pagination buttons
+
+                    showSearch: true, // Toggle to show/hide the search box
+
+                    // Advanced Settings
+                    url: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Website/contentTypes/" +
+                        contentType + "/entries/",
+                    searchUrl: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/" + projectId +
+                        "/entries/",
+
+                    // Add search fields to search against. 
+                    searchFields: ["representorName",
+                    "agentName"], // These can be found within Contensis Content Modelling(API name for the field).
+
+                    // **DO NOT EDIT BELOW**
+                    numOfPaginationBtns: 0, // number of buttons for paginating the results. Set to 0 to show all.
+                    includePageCount: true, // set whether to request the page count parameter for the API calls.
+                    items: null, // array for the content types to be appended to. Will be used after the first API call, see 'mounted' hook below.
+                    loading: true, // used to determine when to show loading animation. Needs to be set to true initially. Do not change.
+                    errored: false,
+                    currentPageIndex: 0,
+                    totalCount: null, // container for
+                    pageCount: null, // container for total page count for API call, value used for pagination
+                    pageBtns: [], // Array for page pagination buttons
+
+                    contentType: contentType,
+
+                    // Search
+                    searchTerm: "",
+                    searchAlert: false // Used to check whether to show the 'Please enter a search term alert'. Leave as false.
+
+                }
+            },
+            filters: {
+                currencydecimal(value) {
+                    return value.toFixed(2)
+                }
+            },
+            methods: {
+                getPlainUrl: function () {
+                    return this.url;
+                },
+                getSearchUrl: function () {
+                    return this.searchUrl;
+                },
+                getBaseUrl: function () {
+                    var url = this.url
+                    // Add access token to URL
+                    url = url + '?accessToken=' + this.accessToken;
+                    // Add link depth to URL
+                    url = url + '&linkDepth=' + this.linkDepth;
+                    // Add page size to URL
+                    url = url + '&pageSize=' + this.pageSize;
+                    // Add page count to URL
+                    if (this.includePageCount) {
+                        url = url + '&totalCount';
+                    }
+                    url = url + '&pageCount';
+                    console.log(url);
+
+                    return url;
+                },
+                previousPage: function () {
+                    if (this.currentPageIndex > 0) {
+                        this.loading = true;
+                        var prevPageUrl = this.getBaseUrl() + '&pageIndex=' + (this.currentPageIndex - 1);
+                        axios
+                            .get(
+                                prevPageUrl
+                            )
+                            .then(response => {
+                                this.items = response.data.items;
+                                this.loading = false;
+                                console.log("Success!!");
+                                this.currentPageIndex = this.currentPageIndex - 1;
+                                this.generatePaginationBtns(this.currentPageIndex);
+                                this.loading = false;
+                            })
+                            .catch(error => {
+                                console.log(error)
+                                this.errored = true
+                            })
+                            .finally(() => this.loading = false)
+                    }
+                },
+                nextPage: function () {
+                    // Check if next page exceeds page count
+                    if (this.currentPageIndex + 1 < this.pageCount) {
+                        // Set loading
+                        this.loading = true;
+                        // API call with pageIndex parameter
+                        var nextPageUrl = this.getBaseUrl() + '&pageIndex=' + (this.currentPageIndex + 1);
+
+                        axios
+                            .get(
+                                nextPageUrl
+                            )
+                            .then(response => {
+                                this.items = response.data.items;
+                                this.loading = false;
+
+                                console.log("Success!!");
+                                this.currentPageIndex = this.currentPageIndex + 1;
+                                this.generatePaginationBtns(this.currentPageIndex);
+                                this.loading = false;
+                            })
+                            .catch(error => {
+                                console.log(error)
+                                this.errored = true
+                            })
+                            .finally(() => this.loading = false)
+
+                        console.log("Next page button...");
+                    }
+
+                },
+                goToPage: function (pageNum) {
+                    this.loading = true;
+                    var goToPageUrl = this.getBaseUrl() + '&pageIndex=' + (pageNum - 1);
+
+                    axios
+                        .get(
+                            goToPageUrl
+                        )
+                        .then(response => {
+                            this.items = response.data.items;
+                            this.loading = false;
+
+                            console.log("Success!!");
+                            this.currentPageIndex = pageNum - 1;
+                            this.generatePaginationBtns(this.currentPageIndex);
+                            this.loading = false;
+                        })
+                        .catch(error => {
+                            console.log(error)
+                            this.errored = true
+                        })
+                        .finally(() => this.loading = false)
+                },
+                generatePaginationBtns: function (currentPage) {
+                    // Reset pageBtns array, before refreshing the buttons to show.
+                    // This is required as a new list of buttons will be generated 
+                    this.pageBtns = [];
+                    // get current page
+                    var currentPageValue = currentPage;
+                    for (let index = 0; index < this.pageCount; index++) {
+                        this.pageBtns.push({
+                            pageNum: index + 1
+                        });
+                    }
+                },
+                searchContentType: function (searchTermValue) {
+                    console.log(searchTermValue);
+
+                    if (searchTermValue === "") {
+                        this.searchAlert = true;
+                        return null
+                    } else {
+                        this.searchAlert = false;
+                    }
+
+                    let arrayOfFields = this.searchFields;
+
+                    // Array to add to query
+                    let orArray = [];
+
+                    arrayOfFields.forEach(element => {
+                        console.log(element);
+                        let objectToAppend = new Object({
+                            "field": element,
+                            "contains": searchTermValue
+                        });
+                        orArray.push(objectToAppend);
+                    });
+
+                    console.log(orArray);
+
+                    let query = [{
+                            "or": orArray
+                        },
+                        {
+                            "field": "sys.versionStatus",
+                            "equalTo": "published"
+                        }
+                    ];
+
+                    const uri = JSON.stringify(query);
+
+                    const encoded = encodeURIComponent(uri);
+                    console.log("Encoded component...");
+                    console.log(encoded);
+
+                    // Axios
+                    axios
+                        .get(
+                            (this.getSearchUrl()) + "search?where=" + encoded, {
+                                params: {
+                                    contentTypeId: this.contentType,
+                                    accessToken: this.accessToken,
+                                    pageSize: this.pageSize,
+                                    pageIndex: 0,
+                                    linkDepth: 5
+
+                                }
+                            }
+                        )
+                        .then(response => {
+                            this.items = response.data.items;
+                            this.loading = false;
+                            this.totalCount = response.data.totalCount;
+                            this.pageCount = response.data.pageCount;
+                            this.generatePaginationBtns(this.currentPageIndex);
+                            console.log("Success!!");
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            console.log(error)
+                            this.errored = true
+                        })
+                        .finally(() => this.loading = false)
+                },
+                resetSearch: function () {
+                    this.searchTerm = "";
+                    axios
+                        .get(
+                            this.getBaseUrl()
+                        )
+                        .then(response => {
+                            this.items = response.data.items;
+                            this.loading = false;
+                            this.totalCount = response.data.totalCount;
+                            this.pageCount = response.data.pageCount;
+                            this.generatePaginationBtns(this.currentPageIndex);
+                            console.log("Success!!");
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            console.log(error)
+                            this.errored = true
+                        })
+                        .finally(() => this.loading = false)
+                }
+            },
+            mounted() {
+                // Add enter key event listener for 'Enter' key search
+                if (this.showSearch) {
+                    document.getElementById("contentTypeSearchInput")
+                        .addEventListener("keyup", function (event) {
+                            event.preventDefault();
+                            if (event.keyCode === 13) {
+                                document.getElementById("contentTypeSearchBtn").click();
+                            }
+                        });
+                }
+                this.resetSearch();
+            }
+        })
+    </script>
