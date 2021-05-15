@@ -37,6 +37,12 @@
             justify-content: flex-start;
         }
 
+        .date-range {
+            display: flex;
+            justify-content: start;
+            flex-direction: column;
+        }
+
         @media screen and (max-width: 768px) {
             .search-options-container {
                 flex-direction: column;
@@ -130,6 +136,16 @@
                         Other
                     </label>
                 </div>
+            </div> <!-- End of bin options -->
+            <div class="date-range">
+                <label for="meeting-time">Date range</label>
+
+                <input type="datetime-local" id="start-date"
+                    name="start-date" value="2018-06-12T19:30"
+                    min="2018-06-07T00:00" max="2018-06-14T00:00">
+                <input type="datetime-local" id="end-date"
+                    name="end-date" value="2018-06-12T19:30"
+                    min="2018-06-07T00:00" max="2018-06-14T00:00">
             </div>
         </div>
 
