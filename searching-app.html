@@ -34,6 +34,7 @@
 
         .search-options-container {
             display: flex;
+            flex-direction: column;
             justify-content: flex-start;
         }
 
@@ -48,12 +49,12 @@
                 flex-direction: column;
             }
 
-            .bin-options {
+            .category-options {
                 margin-bottom: 10px;
             }
         }
 
-        .bin-options {
+        .category-options {
             margin-left: 10px;
         }
 
@@ -61,165 +62,155 @@
         .search-error-messages {
             max-width: 400px;
         }
-
-        .what-waste-goes-where-table {
-            max-width: 960px;
-        }
-
-        .what-waste-goes-where-table td:nth-child(2) {
-            max-width: 600px;
-        }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js">
+        window.addEventListener('keydown', function (e) {
+            if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode == 13) {
+                if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        }, true);
+    </script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2"></script> -->
 </head>
 
 <body>
-    <h1>What Waste Goes Where</h1>
+    <h1>Ranger Events</h1>
 
     <div id="contentTypesContainer">
         <!-- ID for this element must match the created VUE object instance -->
 
-
-        <div class="search-options-container">
-            <div class="search-options">
-                <div v-if="showSearch" class="input-group mb-3 content-type-search">
-                    <input type="text" class="form-control" placeholder="Type here..." v-model="searchTerm"
-                        aria-label="Recipient's username" aria-describedby="basic-addon2" id="contentTypeSearchInput">
-                    <div class="input-group-append">
-                        <button type="button" class="btn btn-outline-secondary" type="button"
-                            v-on:click="searchContentType(searchTerm)" id="contentTypeSearchBtn">Search</button>
-                        <button v-if="searchTerm.length > 0" class="btn btn-outline-secondary" type="button"
-                            v-on:click="resetSearch">Clear Search</button>
-                    </div>
-                </div>
-                <div v-if="showSearch" class="search-error-messages">
-                    <div v-if="searchAlert" class="alert alert-secondary mt-2" role="alert">
-                        Please enter a search term.
-                    </div>
-                </div>
-            </div>
-
-            <div class="bin-options">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="binOptionCheckbox" id="anyBinCheckbox"
-                        v-on:click="setBinOption('any')">
-                    <label class="form-check-label" for="anyBinCheckbox">
-                        Any
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="binOptionCheckbox" id="blackBinCheckbox"
-                        v-on:click="setBinOption('black')">
-                    <label class="form-check-label" for="blackBinCheckbox">
-                        Black household waste bin
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="binOptionCheckbox" id="silverBinCheckbox"
-                        v-on:click="setBinOption('silver')">
-                    <label class="form-check-label" for="silverBinCheckbox">
-                        Silver household waste bin
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="binOptionCheckbox" id="greenBinCheckbox"
-                        v-on:click="setBinOption('green')">
-                    <label class="form-check-label" for="greenBinCheckbox">
-                        Green or brown garden bin
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="binOptionCheckbox" id="otherBinCheckbox"
-                        v-on:click="setBinOption('other')">
-                    <label class="form-check-label" for="otherBinCheckbox">
-                        Other
-                    </label>
-                </div>
-            </div> <!-- End of bin options -->
-            <div class="date-range">
-                <label for="meeting-time">Date range</label>
-
-                <input type="datetime-local" id="start-date"
-                    name="start-date" value="2018-06-12T19:30"
-                    min="2018-06-07T00:00" max="2018-06-14T00:00">
-                <input type="datetime-local" id="end-date"
-                    name="end-date" value="2018-06-12T19:30"
-                    min="2018-06-07T00:00" max="2018-06-14T00:00">
-            </div>
-        </div>
-
-
-
-
-
-        <div v-if="showPaginationTop" class="mt-1 mb-1">
-            <!-- Will show if the showPaginationTop is set to 'true' -->
-            <nav role="navigation" aria-label="Results data navigation">
-                <!-- Pagination buttons above results -->
-                <ul class="pagination mb-0">
-                    <li class="page-item" v-bind:class="{ disabled: currentPageIndex == 0 || loading }"><button
-                            class="page-link" v-on:click="previousPage">Previous</a></li>
-                    <li v-if="showFirstLastBtns" class="page-item">
-                        <!-- Can be set to show/hide by setting the showFirstLastBtns to true/false -->
-                        <button class="page-link" type="button" aria-label="Next" v-on:click="goToPage(1)">
-                            <span aria-hidden="true">&laquo;</span>
-                        </button>
-                    </li>
-                    <li v-if="showPageBtns" v-for="pageBtn in pageBtns" class="page-item"
-                        v-bind:class="{ active: currentPageIndex == pageBtn.pageNum - 1 }"><button class="page-link"
-                            type="button" v-on:click="goToPage(pageBtn.pageNum)">{{ pageBtn.pageNum }}</button></li>
-                    <!-- Numbered pagination buttons. Can be hidden/shown by toggling showPageBtns to true/false -->
-                    <li v-if="showFirstLastBtns" class="page-item">
-                        <!-- Can be set to show/hide by setting the showFirstLastBtns to true/false -->
-                        <button class="page-link" type="button" aria-label="Next" v-on:click="goToPage(pageCount)">
-                            <span aria-hidden="true">&raquo;</span>
-                        </button>
-                    </li>
-                    <li class="page-item" v-bind:class="{ disabled: currentPageIndex+1 == pageCount || loading }">
-                        <button class="page-link" type="button" v-on:click="nextPage">Next</button></li>
-                </ul>
-            </nav>
-            <div v-if="loading == false" class="api-results-info">
-                <p>Total results: <strong>{{ totalCount }}</strong></p>
-                <p>Current page: <strong>{{ currentPageIndex+1 }}</strong></p>
-            </div>
-        </div>
-        <div v-if="loading">
-            <div class="spinner-grow" role="status">
-                <!-- <span class="sr-only">Loading...</span> -->
-            </div>
-        </div>
-
-
         <!-- User editable region -->
-        <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-8">
+                    <div v-if="showPaginationTop" class="mt-1 mb-1">
+                        <!-- Will show if the showPaginationTop is set to 'true' -->
+                        <nav role="navigation" aria-label="Results data navigation">
+                            <!-- Pagination buttons above results -->
+                            <ul class="pagination mb-0">
+                                <li class="page-item" v-bind:class="{ disabled: currentPageIndex == 0 || loading }">
+                                    <button class="page-link" v-on:click="previousPage">Previous</a></li>
+                                <li v-if="showFirstLastBtns" class="page-item">
+                                    <!-- Can be set to show/hide by setting the showFirstLastBtns to true/false -->
+                                    <button class="page-link" type="button" aria-label="Next" v-on:click="goToPage(1)">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </button>
+                                </li>
+                                <li v-if="showPageBtns" v-for="pageBtn in pageBtns" class="page-item"
+                                    v-bind:class="{ active: currentPageIndex == pageBtn.pageNum - 1 }"><button
+                                        class="page-link" type="button"
+                                        v-on:click="goToPage(pageBtn.pageNum)">{{ pageBtn.pageNum }}</button></li>
+                                <!-- Numbered pagination buttons. Can be hidden/shown by toggling showPageBtns to true/false -->
+                                <li v-if="showFirstLastBtns" class="page-item">
+                                    <!-- Can be set to show/hide by setting the showFirstLastBtns to true/false -->
+                                    <button class="page-link" type="button" aria-label="Next"
+                                        v-on:click="goToPage(pageCount)">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </button>
+                                </li>
+                                <li class="page-item"
+                                    v-bind:class="{ disabled: currentPageIndex+1 == pageCount || loading }">
+                                    <button class="page-link" type="button" v-on:click="nextPage">Next</button></li>
+                            </ul>
+                        </nav>
+                        <div v-if="loading == false" class="api-results-info">
+                            <p>Total results: <strong>{{ totalCount }}</strong></p>
+                            <p>Current page: <strong>{{ currentPageIndex+1 }}</strong></p>
+                        </div>
+                    </div>
+                    <div v-if="loading">
+                        <div class="spinner-grow" role="status">
+                            <!-- <span class="sr-only">Loading...</span> -->
+                        </div>
+                    </div>
+                    <!-- Events output -->
+                    <div v-for="item in items" class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.entryTitle }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
+                                of the card's content.</p>
+                            <a href="#" class="card-link">Card link</a>
+                            <a href="#" class="card-link">Another link</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="search-options-container">
+                        <div class="search-options">
+                            <div v-if="showSearch" class="input-group mb-3 content-type-search">
+                                <input type="text" class="form-control" placeholder="Type here..." v-model="searchTerm"
+                                    aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                    id="contentTypeSearchInput">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary" type="button"
+                                        v-on:click="searchContentType(searchTerm)"
+                                        id="contentTypeSearchBtn">Search</button>
+                                    <button v-if="searchTerm.length > 0" class="btn btn-outline-secondary" type="button"
+                                        v-on:click="resetSearch">Clear Search</button>
+                                </div>
+                            </div>
+                            <div v-if="showSearch" class="search-error-messages">
+                                <div v-if="searchAlert" class="alert alert-secondary mt-2" role="alert">
+                                    Please enter a search term.
+                                </div>
+                            </div>
+                        </div>
 
-            <!-- Define your content here -->
-            <table class="what-waste-goes-where-table">
-                <thead>
-                    <tr>
-                        <th scope="col">Item</th>
-                        <th scope="col">Solutions</th>
-                        <th scope="col">Bin Colour</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in items">
-                        <td>
-                            <p><strong>{{ item.itemDescription }}</strong></p>
-                            <p><strong>{{ item.additionalTitle }}</strong></p>
-                        </td>
-                        <td v-html="item.solution">
+                        <div class="bin-options">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="binOptionCheckbox"
+                                    id="anyBinCheckbox" v-on:click="setBinOption('any')">
+                                <label class="form-check-label" for="anyBinCheckbox">
+                                    Any
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="binOptionCheckbox"
+                                    id="blackBinCheckbox" v-on:click="setBinOption('black')">
+                                <label class="form-check-label" for="blackBinCheckbox">
+                                    Black household waste bin
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="binOptionCheckbox"
+                                    id="silverBinCheckbox" v-on:click="setBinOption('silver')">
+                                <label class="form-check-label" for="silverBinCheckbox">
+                                    Silver household waste bin
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="binOptionCheckbox"
+                                    id="greenBinCheckbox" v-on:click="setBinOption('green')">
+                                <label class="form-check-label" for="greenBinCheckbox">
+                                    Green or brown garden bin
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="binOptionCheckbox"
+                                    id="otherBinCheckbox" v-on:click="setBinOption('other')">
+                                <label class="form-check-label" for="otherBinCheckbox">
+                                    Other
+                                </label>
+                            </div>
+                        </div> <!-- End of bin options -->
+                        <div class="date-range">
+                            <label for="meeting-time">Date range</label>
 
-                        </td>
-                        <td>{{ item.binOption[0] }}</td>
-                    </tr>
-                </tbody>
-            </table>
+                            <input type="datetime-local" id="start-date" name="start-date" value="2018-06-12T19:30"
+                                min="2018-06-07T00:00" max="2018-06-14T00:00">
+                            <input type="datetime-local" id="end-date" name="end-date" value="2018-06-12T19:30"
+                                min="2018-06-07T00:00" max="2018-06-14T00:00">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-
-        </section> <!-- End of user editable region -->
+        </div>
+        <!-- End of user editable region -->
 
         <!-- Bottom navigation -->
         <!-- **DO NOT EDIT** -->
@@ -260,7 +251,7 @@
                 // Content Type Settings
                 // Please change the below settings when using a different content type
                 // In most cases, the properties below will be only the settings to change here before rendering the content above, using the following syntax(example): {{ item.consultantTitle }} within the HTML.
-                let contentType = "whatWasteGoesWhere";
+                let contentType = "rangerEvents";
                 let projectId = "website";
 
                 // Search settings
@@ -280,7 +271,7 @@
 
                     showSearch: true, // Toggle to show/hide the search box
 
-                    ordering: "itemDescription", // set the field to order by. Set to id of field(e.g. "consultantTitle"). To reverse order, add '-'(e.g. "-consultantTitle").
+                    ordering: "title", // set the field to order by. Set to id of field(e.g. "consultantTitle"). To reverse order, add '-'(e.g. "-consultantTitle").
 
                     // Advanced Settings
                     url: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Website/contentTypes/" +
@@ -289,8 +280,9 @@
                         "/entries/",
 
                     // Add search fields to search against. 
-                    searchFields: ["itemDescription", "itemSolution",
-                    "binOption"], // These can be found within Contensis Content Modelling(API name for the field).
+                    searchFields: [
+                        "title"
+                    ], // These can be found within Contensis Content Modelling(API name for the field).
 
                     // **DO NOT EDIT BELOW**
                     numOfPaginationBtns: 0, // number of buttons for paginating the results. Set to 0 to show all.
@@ -309,8 +301,27 @@
                     searchTerm: "",
                     searchAlert: false, // Used to check whether to show the 'Please enter a search term alert'. Leave as false.
 
-                    // Bin option
-                    binOption: ""
+                    // Category options
+                    categoryOptions: [
+                        'Bring a packed lunch',
+                        'Bring binoculars if you have them',
+                        'Car parking charge',
+                        'Children must be accompanied by an adult',
+                        'Easy walking grade',
+                        'Full accessibility - level or ramped access. Accessible toilets available',
+                        'Healthy walk',
+                        'Historial walk',
+                        'Ideal for families and accompanied children',
+                        'Moderate walking grade',
+                        'Partial accessibility - level or ramped access',
+                        'Partnership event',
+                        'Places limited - please book in advance',
+                        'Please wear suitable boots and clothing',
+                        'Refreshment shop, opportunity for refreshments',
+                        'Strenuous walking grade',
+                        'There is a charge for this event',
+                        'Wildlife walk'
+                        ]
                 }
             },
             filters: {
@@ -509,70 +520,9 @@
                 },
                 resetSearch: function () {
                     this.searchTerm = "";
-                    this.goToPage(1);
-                    this.generatePaginationBtns(this.currentPageIndex);
-                },
-                setBinOption: function (bin) {
-                    if (bin != 'any') {
-                        this.binOption = bin;
-                        this.filterByBin();
-                    } else {
-                        this.binOption = "";
-                        this.resetSearch();
-                    }
-                   
-                },
-                filterByBin: function () {
-                    let binOption = this.binOption;
-
-                    let binString = "";
-                    // Bin string
-                    switch (binOption) {
-                        case "black":
-                            binString = "Black household waste bin";
-                            break;
-                        case "silver":
-                            binString = "Silver grey recycling bin"
-                            break;
-                        case "green":
-                            binString = "Green or brown garden bin"
-                            break;
-                        case "other":
-                            binString = "Other";
-                            break;
-                        default:
-                            binString = "";
-                            break;
-                    }
-
-
-                    let binQuery = [{
-                            "field": "binOption",
-                            "equalTo": binString
-                        },
-                        {
-                            "field": "sys.versionStatus",
-                            "equalTo": "published"
-                        }
-                    ];
-                   
-                    uri = JSON.stringify(binQuery);
-
-                    const encoded = encodeURIComponent(uri);
-
                     axios
                         .get(
-                            (this.getSearchUrl()) + "search?where=" + encoded, {
-                                params: {
-                                    contentTypeId: this.contentType,
-                                    accessToken: this.accessToken,
-                                    pageSize: this.pageSize,
-                                    pageIndex: 0,
-                                    linkDepth: 5,
-                                    order: this.ordering
-
-                                }
-                            }
+                            this.getBaseUrl()
                         )
                         .then(response => {
                             this.items = response.data.items;
@@ -588,7 +538,9 @@
                             this.errored = true
                         })
                         .finally(() => this.loading = false)
-
+                },
+                generateCategoryOptions: function() {
+                    
                 }
             },
             mounted() {
@@ -601,25 +553,20 @@
                                 document.getElementById("contentTypeSearchBtn").click();
                             }
                         });
+                    window.addEventListener('keydown', function (e) {
+                        if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode ==
+                            13) {
+                            if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
+                                e.preventDefault();
+                                return false;
+                            }
+                        }
+                    }, true);
                 }
-                axios
-                    .get(
-                        this.getBaseUrl()
-                    )
-                    .then(response => {
-                        this.items = response.data.items;
-                        this.loading = false;
-                        this.totalCount = response.data.totalCount;
-                        this.pageCount = response.data.pageCount;
-                        this.generatePaginationBtns(this.currentPageIndex);
-                        console.log("Success!!");
-                        console.log(response);
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        this.errored = true
-                    })
-                    .finally(() => this.loading = false)
+                this.resetSearch();
+                this.generateCategoryOptions();
+                // Add category buttons
+                
             }
         })
     </script>
