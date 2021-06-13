@@ -49,13 +49,6 @@
                 flex-direction: column;
             }
 
-            .category-options {
-                margin-bottom: 10px;
-            }
-        }
-
-        .category-options {
-            margin-left: 10px;
         }
 
         .input-group.mb-3.content-type-search,
@@ -160,41 +153,10 @@
                             </div>
                         </div>
 
-                        <div class="bin-options">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="binOptionCheckbox"
-                                    id="anyBinCheckbox" v-on:click="setBinOption('any')">
-                                <label class="form-check-label" for="anyBinCheckbox">
-                                    Any
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="binOptionCheckbox"
-                                    id="blackBinCheckbox" v-on:click="setBinOption('black')">
-                                <label class="form-check-label" for="blackBinCheckbox">
-                                    Black household waste bin
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="binOptionCheckbox"
-                                    id="silverBinCheckbox" v-on:click="setBinOption('silver')">
-                                <label class="form-check-label" for="silverBinCheckbox">
-                                    Silver household waste bin
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="binOptionCheckbox"
-                                    id="greenBinCheckbox" v-on:click="setBinOption('green')">
-                                <label class="form-check-label" for="greenBinCheckbox">
-                                    Green or brown garden bin
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="binOptionCheckbox"
-                                    id="otherBinCheckbox" v-on:click="setBinOption('other')">
-                                <label class="form-check-label" for="otherBinCheckbox">
-                                    Other
-                                </label>
+                        <div class="category-options">
+                            <div class="form-check" v-for="category in categoryOptions">
+                                <input type="checkbox" name="categoryOption" v-bind:id="category">
+                                <label v-bind:for="category">{{ category }}</label>
                             </div>
                         </div> <!-- End of bin options -->
                         <div class="date-range">
