@@ -155,17 +155,18 @@
 
                         <div class="category-options">
                             <div class="form-check" v-for="category in categoryOptions">
-                                <input type="checkbox" name="categoryOption" v-bind:id="category">
+                                <input type="checkbox" name="categoryOption" v-bind:id="category" v-on:change="filterList(category)">
                                 <label v-bind:for="category">{{ category }}</label>
                             </div>
-                        </div> <!-- End of bin options -->
+                        </div> <!-- End of category options -->
+
                         <div class="date-range">
                             <label for="meeting-time">Date range</label>
 
-                            <input type="datetime-local" id="start-date" name="start-date" value="2018-06-12T19:30"
-                                min="2018-06-07T00:00" max="2018-06-14T00:00">
-                            <input type="datetime-local" id="end-date" name="end-date" value="2018-06-12T19:30"
-                                min="2018-06-07T00:00" max="2018-06-14T00:00">
+                            <input type="datetime-local" id="start-date" name="start-date" value="2020-06-12T19:30"
+                                min="2020-06-07T00:00" max="2025-06-14T00:00">
+                            <input type="datetime-local" id="end-date" name="end-date" value="2022-06-12T19:30"
+                                min="2020-06-07T00:00" max="2025-06-14T00:00">
                         </div>
                     </div>
                 </div>
@@ -283,7 +284,8 @@
                         'Strenuous walking grade',
                         'There is a charge for this event',
                         'Wildlife walk'
-                        ]
+                        ],
+                    selectedCategoryOptions: []
                 }
             },
             filters: {
@@ -501,6 +503,66 @@
                         })
                         .finally(() => this.loading = false)
                 },
+                filterList: function(category) {
+                    // Update list on filter change(e.g. checkbox, date picker change)
+                   //alert(category);
+                   if(document.getElementById(category).checked == true) {
+                    console.log(category + ": is true.");
+                    this.selectedCategoryOptions.push(category);
+                   }
+                   this.selectedCategoryOptions = [...new Set(this.selectedCategoryOptions)];
+                   console.log(this.selectedCategoryOptions);
+
+                   // Search 
+                   let query = [{
+                            "or": {
+                                "field": "tags",
+                                "exists": true 
+                            }
+                        },
+                        {
+                            "field": "sys.versionStatus",
+                            "equalTo": "published"
+                        }
+                    ];
+
+                    uri = JSON.stringify(query);
+
+                    const encoded = encodeURIComponent(uri);
+                    console.log("Encoded component...");
+                    console.log(encoded);
+
+                    // Axios
+                    axios
+                        .get(
+                            (this.getSearchUrl()) + "search?where=" + encoded, {
+                                params: {
+                                    contentTypeId: this.contentType,
+                                    accessToken: this.accessToken,
+                                    pageSize: this.pageSize,
+                                    pageIndex: 0,
+                                    linkDepth: 5,
+                                    order: this.ordering
+
+                                }
+                            }
+                        )
+                        .then(response => {
+                            this.items = response.data.items;
+                            this.loading = false;
+                            this.totalCount = response.data.totalCount;
+                            this.pageCount = response.data.pageCount;
+                            this.generatePaginationBtns(this.currentPageIndex);
+                            console.log("Success!!");
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            console.log(error)
+                            this.errored = true
+                        })
+                        .finally(() => this.loading = false)
+                },
+
                 generateCategoryOptions: function() {
                     
                 }
