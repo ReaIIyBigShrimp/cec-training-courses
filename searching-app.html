@@ -44,6 +44,8 @@
             flex-direction: column;
         }
 
+        .item-card { margin-bottom: 1rem;}
+
         @media screen and (max-width: 768px) {
             .search-options-container {
                 flex-direction: column;
@@ -120,14 +122,21 @@
                         </div>
                     </div>
                     <!-- Events output -->
-                    <div v-for="item in items" class="card" style="width: 18rem;">
+                    <div v-if="!showSelectedItem" v-for="item in items" class="card item-card">
                         <div class="card-body">
                             <h5 class="card-title">{{ item.entryTitle }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" class="card-link">Card link</a>
-                            <a href="#" class="card-link">Another link</a>
+                            <h6 class="card-subtitle mb-2 text-muted">Start: {{ item.dateStartEnd.from | formatDate }}
+                                <br>End: {{ item.dateStartEnd.to | formatDate }}</h6>
+                            <p class="card-text" v-html="item.description"></p>
+                            <a v-on:click="setSelectedItem(item)" role="button" class="btn btn-primary">View Event</a>
+                        </div>
+                    </div>
+
+                    <!-- Selected event details -->
+                    <div v-if="showSelectedItem" class="selectedItem">
+                        <a v-on:click="unSetSelectedItem" role="button" class="btn btn-primary">Back to results</a>
+                        <div class="selected-item-details">
+                            
                         </div>
                     </div>
                 </div>
@@ -155,7 +164,8 @@
 
                         <div class="category-options">
                             <div class="form-check" v-for="category in categoryOptions">
-                                <input type="checkbox" name="categoryOption" v-bind:id="category" v-on:change="filterList(category)">
+                                <input type="checkbox" name="categoryOption" v-bind:id="category"
+                                    v-on:change="filterList(category)">
                                 <label v-bind:for="category">{{ category }}</label>
                             </div>
                         </div> <!-- End of category options -->
@@ -284,13 +294,35 @@
                         'Strenuous walking grade',
                         'There is a charge for this event',
                         'Wildlife walk'
-                        ],
-                    selectedCategoryOptions: []
+                    ],
+                    selectedCategoryOptions: [],
+
+                    selectedItem: null,
+                    showSelectedItem: false
                 }
             },
             filters: {
                 currencydecimal(value) {
                     return value.toFixed(2)
+                },
+                formatDate(value) {
+                    const monthNames = ["January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December"
+                    ];
+
+                    let date = new Date(value);
+
+                    console.log(date);
+
+                    const day = date.getDay();
+                    const month = monthNames[date.getMonth()];
+                    const year = date.getFullYear();
+
+                    return (day + " " + month + " " + year)
+                },
+                truncate(string) {
+                    // limit to character length
+                    return string
                 }
             },
             methods: {
@@ -503,21 +535,23 @@
                         })
                         .finally(() => this.loading = false)
                 },
-                filterList: function(category) {
+                filterList: function (category) {
                     // Update list on filter change(e.g. checkbox, date picker change)
-                   //alert(category);
-                   if(document.getElementById(category).checked == true) {
-                    console.log(category + ": is true.");
-                    this.selectedCategoryOptions.push(category);
-                   }
-                   this.selectedCategoryOptions = [...new Set(this.selectedCategoryOptions)];
-                   console.log(this.selectedCategoryOptions);
+                    if (document.getElementById(category).checked == true) {
+                        console.log(category + ": is true.");
+                        this.selectedCategoryOptions.push(category);
+                    } else if (document.getElementById(category).checked == false) {
+                        let indexOfCat = this.selectedCategoryOptions.indexOf(category);
+                        this.selectedCategoryOptions.splice(indexOfCat, 1);
+                    }
+                    this.selectedCategoryOptions = [...new Set(this.selectedCategoryOptions)];
+                    console.log(this.selectedCategoryOptions);
 
-                   // Search 
-                   let query = [{
+                    // Search 
+                    let query = [{
                             "or": {
                                 "field": "tags",
-                                "exists": true 
+                                "contains": this.selectedCategoryOptions
                             }
                         },
                         {
@@ -562,9 +596,19 @@
                         })
                         .finally(() => this.loading = false)
                 },
+                setSelectedItem: function(item) {
+                    // 
+                    this.selectedItem = item;
+                    this.showSelectedItem = true;
+                    console.log(this.selectedItem);
+                },
+                unSetSelectedItem: function() {
+                    this.selectedItem = null;
+                    this.showSelectedItem = false;
+                },
 
-                generateCategoryOptions: function() {
-                    
+                generateCategoryOptions: function () {
+                    // todo
                 }
             },
             mounted() {
@@ -590,7 +634,7 @@
                 this.resetSearch();
                 this.generateCategoryOptions();
                 // Add category buttons
-                
+
             }
         })
     </script>
