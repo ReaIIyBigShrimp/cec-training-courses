@@ -44,11 +44,23 @@
             flex-direction: column;
         }
 
-        .item-card { margin-bottom: 1rem;}
+        .item-card {
+            margin-bottom: 1rem;
+        }
+
+        /*Event details*/
+
+        .selected-item-details--title {
+            font-size: 1.5em;
+        }
 
         @media screen and (max-width: 768px) {
             .search-options-container {
                 flex-direction: column;
+            }
+
+            .events-container {
+                flex-direction: column-reverse;
             }
 
         }
@@ -79,9 +91,9 @@
 
         <!-- User editable region -->
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-8">
-                    <div v-if="showPaginationTop" class="mt-1 mb-1">
+            <div class="row events-container">
+                <div class="col-md-8">
+                    <div v-if="showPaginationTop && !showSelectedItem" class="mt-1 mb-1">
                         <!-- Will show if the showPaginationTop is set to 'true' -->
                         <nav role="navigation" aria-label="Results data navigation">
                             <!-- Pagination buttons above results -->
@@ -125,8 +137,8 @@
                     <div v-if="!showSelectedItem" v-for="item in items" class="card item-card">
                         <div class="card-body">
                             <h5 class="card-title">{{ item.entryTitle }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Start: {{ item.dateStartEnd.from | formatDate }}
-                                <br>End: {{ item.dateStartEnd.to | formatDate }}</h6>
+                            <!-- <h6 class="card-subtitle mb-2 text-muted">Start: {{ item.dateStartEnd.from | formatDate }}
+                                <br>End: {{ item.dateStartEnd.to | formatDate }}</h6> -->
                             <p class="card-text" v-html="item.description"></p>
                             <a v-on:click="setSelectedItem(item)" role="button" class="btn btn-primary">View Event</a>
                         </div>
@@ -136,11 +148,25 @@
                     <div v-if="showSelectedItem" class="selectedItem">
                         <a v-on:click="unSetSelectedItem" role="button" class="btn btn-primary">Back to results</a>
                         <div class="selected-item-details">
-                            
+                            <h2 class="selected-item-details--title">{{ selectedItem.title }}</h2>
+                            <div class="selected-item-details--description" v-html="selectedItem.description"></div>
+                            <p>Time: {{ selectedItem.dateStartEnd.from | getTimeOnlyFromDate }} -
+                                {{ selectedItem.dateStartEnd.to | getTimeOnlyFromDate }}</p>
+                            <p>Leader(s): {{ selectedItem.leaders }}</p>
+                            <p>Booking: <a v-bind:href="selectedItem.eventbriteLink">{{ selectedItem.title }}</a></p>
+                            <p>More information: <span v-html="selectedItem.eventInformation"></span></p>
+                            <p>Meeting point: <span v-html="selectedItem.meetingPoint"></span></p>
+                            <p>Tags:
+                                <ul>
+                                    <li v-for="tag in selectedItem.tags">
+                                        {{ tag.name }}
+                                    </li>
+                                </ul>
+                            </p>
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
+                <div v-if="!showSelectedItem" class="col-md-4">
                     <div class="search-options-container">
                         <div class="search-options">
                             <div v-if="showSearch" class="input-group mb-3 content-type-search">
@@ -187,7 +213,7 @@
 
         <!-- Bottom navigation -->
         <!-- **DO NOT EDIT** -->
-        <div v-if="showPaginationBottom" class="mt-1 mb-1">
+        <div v-if="showPaginationBottom && !showSelectedItem" class="mt-1 mb-1">
             <nav aria-label="Results data navigation">
                 <ul class="pagination mb-0">
                     <li class="page-item" v-bind:class="{ disabled: currentPageIndex == 0 }"><a class="page-link"
@@ -323,6 +349,12 @@
                 truncate(string) {
                     // limit to character length
                     return string
+                },
+                getTimeOnlyFromDate(date) {
+                    const d = new Date(date);
+                    const hours = d.getHours();
+                    const minutes = d.getMinutes();
+                    return hours.toString() + ":" + (minutes < 10 ? '0' : '') + minutes.toString();
                 }
             },
             methods: {
@@ -478,6 +510,21 @@
                         }
                     ];
 
+                    /**
+                     * let query = [
+                     *      {
+                     *          "field": "sys.versionStatus",
+                     *          "equalTo": "published"
+                     *      },
+                     *      "or": [
+                     *          {
+                     *              "field": "items.name",
+                     *              "equalTo": "SomethingSearchable"
+                     *          }
+                     *      ]
+                     * ]
+                     */
+
                     uri = JSON.stringify(query);
 
                     const encoded = encodeURIComponent(uri);
@@ -546,25 +593,56 @@
                     }
                     this.selectedCategoryOptions = [...new Set(this.selectedCategoryOptions)];
                     console.log(this.selectedCategoryOptions);
-
+                    console.log("");
                     // Search 
-                    let query = [{
+                    /* let query = [{
                             "or": {
-                                "field": "tags",
-                                "contains": this.selectedCategoryOptions
+                                "field": "entryTitle",
+                                "contains": "Marie"
                             }
                         },
                         {
                             "field": "sys.versionStatus",
                             "equalTo": "published"
                         }
-                    ];
+                    ]; */
+
+                    /* let query = [{
+                        "field": "sys.versionStatus",
+                        "equalTo": "latest"
+                    }, {
+                        "field": "sys.contentTypeId",
+                        "equalTo": "rangerEvents"
+                    }, {
+                        "field": "tags",
+                        "in": ["0/16/169/170"]
+                    }]; */
+
+                    let query = [{
+                        "field": "sys.versionStatus",
+                        "equalTo": "latest"
+                    }, {
+                        "field": "sys.contentTypeId",
+                        "equalTo": "rangerEvents"
+                    }, {
+                        "field": "tags",
+                        "in": ["0/16/169/170"]
+                    }];
+
+                    const thing =
+                        "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22field%22%3A%22tags%22%2C%22in%22%3A%5B%220%2F16%2F169%2F176%22%5D%7D%5D";
+
+                    console.log(decodeURIComponent(thing));
+
+                    
 
                     uri = JSON.stringify(query);
 
                     const encoded = encodeURIComponent(uri);
                     console.log("Encoded component...");
                     console.log(encoded);
+
+                    console.log(this.getSearchUrl() + "search?where=" + uri);
 
                     // Axios
                     axios
@@ -577,7 +655,6 @@
                                     pageIndex: 0,
                                     linkDepth: 5,
                                     order: this.ordering
-
                                 }
                             }
                         )
@@ -596,13 +673,13 @@
                         })
                         .finally(() => this.loading = false)
                 },
-                setSelectedItem: function(item) {
+                setSelectedItem: function (item) {
                     // 
                     this.selectedItem = item;
                     this.showSelectedItem = true;
                     console.log(this.selectedItem);
                 },
-                unSetSelectedItem: function() {
+                unSetSelectedItem: function () {
                     this.selectedItem = null;
                     this.showSelectedItem = false;
                 },
