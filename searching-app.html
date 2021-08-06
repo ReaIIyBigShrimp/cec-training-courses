@@ -149,6 +149,7 @@
                         <a v-on:click="unSetSelectedItem" role="button" class="btn btn-primary">Back to results</a>
                         <div class="selected-item-details">
                             <h2 class="selected-item-details--title">{{ selectedItem.title }}</h2>
+                            <img v-bind:src="'https://www.cheshireeast.gov.uk/' + selectedItem.image.asset.sys.uri" v-bind:alt="selectedItem.title">
                             <div class="selected-item-details--description" v-html="selectedItem.description"></div>
                             <p>Time: {{ selectedItem.dateStartEnd.from | getTimeOnlyFromDate }} -
                                 {{ selectedItem.dateStartEnd.to | getTimeOnlyFromDate }}</p>
