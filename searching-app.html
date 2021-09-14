@@ -93,34 +93,34 @@
         <div class="container-fluid">
             <div class="row events-container">
                 <div class="col-md-8">
-                    <div v-if="showPaginationTop && !showSelectedItem" class="mt-1 mb-1">
+                    <div v-if="showPaginationTop && !showSelectedItem" class="my-1">
                         <!-- Will show if the showPaginationTop is set to 'true' -->
                         <nav role="navigation" aria-label="Results data navigation">
                             <!-- Pagination buttons above results -->
-                            <ul class="pagination mb-0">
+                            <ul class="pagination mb-2 ms-0">
                                 <li class="page-item" v-bind:class="{ disabled: currentPageIndex == 0 || loading }">
-                                    <button class="page-link" v-on:click="previousPage">Previous</a></li>
+                                    <button class="page-link" v-on:click="previousPage">Previous</button>
+                                </li>
                                 <li v-if="showFirstLastBtns" class="page-item">
                                     <!-- Can be set to show/hide by setting the showFirstLastBtns to true/false -->
                                     <button class="page-link" type="button" aria-label="Next" v-on:click="goToPage(1)">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </button>
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </button>
                                 </li>
-                                <li v-if="showPageBtns" v-for="pageBtn in pageBtns" class="page-item"
-                                    v-bind:class="{ active: currentPageIndex == pageBtn.pageNum - 1 }"><button
-                                        class="page-link" type="button"
-                                        v-on:click="goToPage(pageBtn.pageNum)">{{ pageBtn.pageNum }}</button></li>
+                                <li v-if="showPageBtns" v-for="pageBtn in pageBtns" class="page-item" v-bind:class="{ active: currentPageIndex == pageBtn.pageNum - 1 }"><button
+                                            class="page-link" type="button"
+                                            v-on:click="goToPage(pageBtn.pageNum)">{{ pageBtn.pageNum }}</button></li>
                                 <!-- Numbered pagination buttons. Can be hidden/shown by toggling showPageBtns to true/false -->
                                 <li v-if="showFirstLastBtns" class="page-item">
                                     <!-- Can be set to show/hide by setting the showFirstLastBtns to true/false -->
                                     <button class="page-link" type="button" aria-label="Next"
-                                        v-on:click="goToPage(pageCount)">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </button>
+                                            v-on:click="goToPage(pageCount)">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </button>
                                 </li>
-                                <li class="page-item"
-                                    v-bind:class="{ disabled: currentPageIndex+1 == pageCount || loading }">
-                                    <button class="page-link" type="button" v-on:click="nextPage">Next</button></li>
+                                <li class="page-item" v-bind:class="{ disabled: currentPageIndex+1 == pageCount || loading }">
+                                    <button class="page-link" type="button" v-on:click="nextPage">Next</button>
+                                </li>
                             </ul>
                         </nav>
                         <div v-if="loading == false" class="api-results-info">
@@ -136,51 +136,64 @@
                     <!-- Events output -->
                     <div v-if="!showSelectedItem" v-for="item in items" class="card item-card">
                         <div class="card-body">
-                            <h5 class="card-title">{{ item.entryTitle }}</h5>
+                            <h2 class="card-title fs-3 mb-4">{{ item.entryTitle }}</h2>
                             <!-- <h6 class="card-subtitle mb-2 text-muted">Start: {{ item.dateStartEnd.from | formatDate }}
-                                <br>End: {{ item.dateStartEnd.to | formatDate }}</h6> -->
+                                    <br>End: {{ item.dateStartEnd.to | formatDate }}</h6> -->
                             <p class="card-text" v-html="item.description"></p>
-                            <a v-on:click="setSelectedItem(item)" role="button" class="btn btn-primary">View Event</a>
+                            <a v-on:click="setSelectedItem(item)" role="button" class="cec-button">View Event<span class="visually-hidden">: </span><span class="visually-hidden" v-html="item.entryTitle"></span> </a>
                         </div>
                     </div>
-
-                    <!-- Selected event details -->
-                    <div v-if="showSelectedItem" class="selectedItem">
-                        <a v-on:click="unSetSelectedItem" role="button" class="btn btn-primary">Back to results</a>
-                        <div class="selected-item-details">
-                            <h2 class="selected-item-details--title">{{ selectedItem.title }}</h2>
-                            <img v-bind:src="'https://www.cheshireeast.gov.uk/' + selectedItem.image.asset.sys.uri"
-                                v-bind:alt="selectedItem.title">
-                            <div class="selected-item-details--description" v-html="selectedItem.description"></div>
-                            <p>Time: {{ selectedItem.dateStartEnd.from | getTimeOnlyFromDate }} -
-                                {{ selectedItem.dateStartEnd.to | getTimeOnlyFromDate }}</p>
-                            <p>Leader(s): {{ selectedItem.leaders }}</p>
-                            <p>Booking: <a v-bind:href="selectedItem.eventbriteLink">{{ selectedItem.title }}</a></p>
-                            <p>More information: <span v-html="selectedItem.eventInformation"></span></p>
-                            <p>Meeting point: <span v-html="selectedItem.meetingPoint"></span></p>
-                            <p>Tags:
+                </div>
+                <!-- Selected event details -->
+    
+                <div v-if="showSelectedItem" class="selectedItem">
+                    <a v-on:click="unSetSelectedItem" role="button" class="cec-button cec-button--back">Back to results</a>
+                    <h1 class="selected-item-details--title text-center">{{ selectedItem.title }}</h1>
+                    <hr>
+                    <div class="selected-item-details">
+    
+                        <div class="row">
+                            <div class="col-12">
+                                <img class="rounded mx-auto d-block" v-bind:src="'https://www.cheshireeast.gov.uk/' + selectedItem.image.asset.sys.uri" v-bind:alt="selectedItem.title">
+                            </div>
+                            <div class="col-lg-6">
+                                <h2>Description</h2>
+                                <div class="selected-item-details--description" v-html="selectedItem.description"></div>
+                                <p><strong>Time:</strong> {{ selectedItem.dateStartEnd.from | getTimeOnlyFromDate }} -
+                                    {{ selectedItem.dateStartEnd.to | getTimeOnlyFromDate }}</p>
+                                <p><strong>Leader(s):</strong> {{ selectedItem.leaders }}</p>
+                                <p><strong>Booking:</strong> <a v-bind:href="selectedItem.eventbriteLink">{{ selectedItem.title }}</a></p>
+                                <p><strong>More information:</strong> <span v-html="selectedItem.eventInformation"></span></p>
+                                <p><strong>Tags:</strong>
                                 <ul>
                                     <li v-for="tag in selectedItem.tags">
                                         {{ tag.name }}
                                     </li>
                                 </ul>
-                            </p>
+                                </p>
+                            </div>
+                            <div class="col-lg-6">
+                                <p><strong>Meeting point:</strong> <span v-html="selectedItem.meetingPoint"></span></p>
+                            </div>
                         </div>
+    
                     </div>
                 </div>
+    
                 <div v-if="!showSelectedItem" class="col-md-4">
                     <div class="search-options-container">
+                        <h2 class="mt-0">Search for an event</h2>
                         <div class="search-options">
                             <div v-if="showSearch" class="input-group mb-3 content-type-search">
-                                <input type="text" class="form-control" placeholder="Type here..." v-model="searchTerm"
-                                    aria-label="Recipient's username" aria-describedby="basic-addon2"
-                                    id="contentTypeSearchInput">
+                                <input type="text" class="form-control me-2" placeholder="Type here..." v-model="searchTerm"
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                        id="contentTypeSearchInput">
                                 <div class="input-group-append">
-                                    <button type="button" class="btn btn-outline-secondary" type="button"
-                                        v-on:click="searchContentType(searchTerm)"
-                                        id="contentTypeSearchBtn">Search</button>
+                                    <button type="button" class="btn btn-outline-secondary"
+                                            v-on:click="searchContentType(searchTerm)"
+                                            id="contentTypeSearchBtn">Search</button>
                                     <button v-if="searchTerm.length > 0" class="btn btn-outline-secondary" type="button"
-                                        v-on:click="resetSearch">Clear Search</button>
+                                            v-on:click="resetSearch">Clear Search</button>
                                 </div>
                             </div>
                             <div v-if="showSearch" class="search-error-messages">
@@ -189,27 +202,32 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="date-range">
+                            <!-- <label for="meeting-time">Date range</label> -->
+                            <h2>Date range</h2>
+                            <label for="start-date">From</label>
+    
+                            <input type="datetime-local" id="start-date" name="start-date" value="2020-06-12T19:30"
+                                    min="2020-06-07T00:00" max="2025-06-14T00:00">
+                            <label for="end-date">To</label>
+                            <input type="datetime-local" id="end-date" name="end-date" value="2022-06-12T19:30"
+                                    min="2020-06-07T00:00" max="2025-06-14T00:00">
+                        </div>
+    
                         <div class="category-options">
+                            <h2 class="mb-3">Categories</h2>
                             <div class="form-check" v-for="category in categoryOptions">
-                                <input type="checkbox" name="categoryOption" v-bind:id="category.id"
-                                    v-on:change="filterList(category)">
-                                <label v-bind:for="category.id">{{ category.name }}</label>
+                                <input class="form-check-input" type="checkbox" name="categoryOption" v-bind:id="category.id"
+                                        v-on:change="filterList(category)">
+                                <label class="form-check-label" v-bind:for="category.id">{{ category.name }}</label>
                             </div>
                         </div> <!-- End of category options -->
-
-                        <div class="date-range">
-                            <label for="meeting-time">Date range</label>
-
-                            <input type="datetime-local" id="start-date" name="start-date" value="2020-06-12T19:30"
-                                min="2020-06-07T00:00" max="2025-06-14T00:00">
-                            <input type="datetime-local" id="end-date" name="end-date" value="2022-06-12T19:30"
-                                min="2020-06-07T00:00" max="2025-06-14T00:00">
-                        </div>
+    
+    
                     </div>
                 </div>
             </div>
-
+    
         </div>
         <!-- End of user editable region -->
 
@@ -760,6 +778,7 @@
                     unSetSelectedItem: function () {
                         this.selectedItem = null;
                         this.showSelectedItem = false;
+                        this.selectedCategoryOptions = [];
                     },
 
                     generateCategoryOptions: function () {
