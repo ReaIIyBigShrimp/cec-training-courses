@@ -149,7 +149,8 @@
                         <a v-on:click="unSetSelectedItem" role="button" class="btn btn-primary">Back to results</a>
                         <div class="selected-item-details">
                             <h2 class="selected-item-details--title">{{ selectedItem.title }}</h2>
-                            <img v-bind:src="'https://www.cheshireeast.gov.uk/' + selectedItem.image.asset.sys.uri" v-bind:alt="selectedItem.title">
+                            <img v-bind:src="'https://www.cheshireeast.gov.uk/' + selectedItem.image.asset.sys.uri"
+                                v-bind:alt="selectedItem.title">
                             <div class="selected-item-details--description" v-html="selectedItem.description"></div>
                             <p>Time: {{ selectedItem.dateStartEnd.from | getTimeOnlyFromDate }} -
                                 {{ selectedItem.dateStartEnd.to | getTimeOnlyFromDate }}</p>
@@ -191,9 +192,9 @@
 
                         <div class="category-options">
                             <div class="form-check" v-for="category in categoryOptions">
-                                <input type="checkbox" name="categoryOption" v-bind:id="category"
+                                <input type="checkbox" name="categoryOption" v-bind:id="category.id"
                                     v-on:change="filterList(category)">
-                                <label v-bind:for="category">{{ category }}</label>
+                                <label v-bind:for="category.id">{{ category.name }}</label>
                             </div>
                         </div> <!-- End of category options -->
 
@@ -245,158 +246,273 @@
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        var app = new Vue({
-            el: '#contentTypesContainer',
-            data() {
-                // Content Type Settings
-                // Please change the below settings when using a different content type
-                // In most cases, the properties below will be only the settings to change here before rendering the content above, using the following syntax(example): {{ item.consultantTitle }} within the HTML.
-                let contentType = "rangerEvents";
-                let projectId = "website";
+        (function () {
+            // your page initialization code here
+            // the DOM will be available here
+            var app = new Vue({
+                el: '#contentTypesContainer',
+                data() {
+                    // Content Type Settings
+                    // Please change the below settings when using a different content type
+                    // In most cases, the properties below will be only the settings to change here before rendering the content above, using the following syntax(example): {{ item.consultantTitle }} within the HTML.
+                    let contentType = "rangerEvents";
+                    let projectId = "website";
 
-                // Search settings
+                    // Search settings
 
-                return {
-                    // Content Type Settings (Continued)
-                    accessToken: 'QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I', // API access token, replace if expired
-                    linkDepth: 5, // leave at 5 if unsure.
-                    pageSize: 20, // number of results per page. Do not leave blank
+                    return {
+                        // Content Type Settings (Continued)
+                        accessToken: 'QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I', // API access token, replace if expired
+                        linkDepth: 5, // leave at 5 if unsure.
+                        pageSize: 20, // number of results per page. Do not leave blank
 
-                    // Optional settings
-                    showPageBtns: true, // If set to false, the page buttons will be hidden and instead just display the 'Previous' and 'Next' buttons
-                    showFirstLastBtns: false, // Toggle to show/hide the '<<' and '>>' buttons
+                        // Optional settings
+                        showPageBtns: true, // If set to false, the page buttons will be hidden and instead just display the 'Previous' and 'Next' buttons
+                        showFirstLastBtns: false, // Toggle to show/hide the '<<' and '>>' buttons
 
-                    showPaginationTop: true, // Toggle to show/hide the top pagination buttons
-                    showPaginationBottom: true, // Toggle to show/hide the top pagination buttons
+                        showPaginationTop: true, // Toggle to show/hide the top pagination buttons
+                        showPaginationBottom: true, // Toggle to show/hide the top pagination buttons
 
-                    showSearch: true, // Toggle to show/hide the search box
+                        showSearch: true, // Toggle to show/hide the search box
 
-                    ordering: "title", // set the field to order by. Set to id of field(e.g. "consultantTitle"). To reverse order, add '-'(e.g. "-consultantTitle").
+                        ordering: "title", // set the field to order by. Set to id of field(e.g. "consultantTitle"). To reverse order, add '-'(e.g. "-consultantTitle").
 
-                    // Advanced Settings
-                    url: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Website/contentTypes/" +
-                        contentType + "/entries/",
-                    searchUrl: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/" + projectId +
-                        "/entries/",
+                        // Advanced Settings
+                        url: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Website/contentTypes/" +
+                            contentType + "/entries/",
+                        searchUrl: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/" +
+                            projectId +
+                            "/entries/",
 
-                    // Add search fields to search against. 
-                    searchFields: [
-                        "title"
-                    ], // These can be found within Contensis Content Modelling(API name for the field).
+                        // Add search fields to search against. 
+                        searchFields: [
+                            "title"
+                        ], // These can be found within Contensis Content Modelling(API name for the field).
 
-                    // **DO NOT EDIT BELOW**
-                    numOfPaginationBtns: 0, // number of buttons for paginating the results. Set to 0 to show all.
-                    includePageCount: true, // set whether to request the page count parameter for the API calls.
-                    items: null, // array for the content types to be appended to. Will be used after the first API call, see 'mounted' hook below.
-                    loading: true, // used to determine when to show loading animation. Needs to be set to true initially. Do not change.
-                    errored: false,
-                    currentPageIndex: 0,
-                    totalCount: null, // container for
-                    pageCount: null, // container for total page count for API call, value used for pagination
-                    pageBtns: [], // Array for page pagination buttons
+                        // **DO NOT EDIT BELOW**
+                        numOfPaginationBtns: 0, // number of buttons for paginating the results. Set to 0 to show all.
+                        includePageCount: true, // set whether to request the page count parameter for the API calls.
+                        items: null, // array for the content types to be appended to. Will be used after the first API call, see 'mounted' hook below.
+                        loading: true, // used to determine when to show loading animation. Needs to be set to true initially. Do not change.
+                        errored: false,
+                        currentPageIndex: 0,
+                        totalCount: null, // container for
+                        pageCount: null, // container for total page count for API call, value used for pagination
+                        pageBtns: [], // Array for page pagination buttons
 
-                    contentType: contentType,
+                        contentType: contentType,
 
-                    // Search
-                    searchTerm: "",
-                    searchAlert: false, // Used to check whether to show the 'Please enter a search term alert'. Leave as false.
+                        // Search
+                        searchTerm: "",
+                        searchAlert: false, // Used to check whether to show the 'Please enter a search term alert'. Leave as false.
 
-                    // Category options
-                    categoryOptions: [
-                        'Bring a packed lunch',
-                        'Bring binoculars if you have them',
-                        'Car parking charge',
-                        'Children must be accompanied by an adult',
-                        'Easy walking grade',
-                        'Full accessibility - level or ramped access. Accessible toilets available',
-                        'Healthy walk',
-                        'Historial walk',
-                        'Ideal for families and accompanied children',
-                        'Moderate walking grade',
-                        'Partial accessibility - level or ramped access',
-                        'Partnership event',
-                        'Places limited - please book in advance',
-                        'Please wear suitable boots and clothing',
-                        'Refreshment shop, opportunity for refreshments',
-                        'Strenuous walking grade',
-                        'There is a charge for this event',
-                        'Wildlife walk'
-                    ],
-                    selectedCategoryOptions: [],
+                        // Category options
+                        categoryOptions: [{
+                                "id": "tagItem188",
+                                "name": "Bring a packed lunch",
+                                "key": "0/16/169/188"
+                            },
+                            // {"id": "tagItem174","name": "Bring binoculars if you have them", "key": ""},
+                            {
+                                "id": "tagItem172",
+                                "name": "Car parking charge",
+                                "key": "0/16/169/172"
+                            },
+                            {
+                                "id": "tagItem173",
+                                "name": "Children must be accompanied by an adult",
+                                "key": "0/16/169/173"
+                            },
+                            {
+                                "id": "tagItem174",
+                                "name": "Easy walking grade",
+                                "key": "0/16/169/174"
+                            },
+                            {
+                                "id": "tagItem175",
+                                "name": "Full accessibility - level or ramped access. Accessible toilets available",
+                                "key": "0/16/169/175"
+                            },
+                            {
+                                "id": "tagItem176",
+                                "name": "Healthy walk",
+                                "key": "0/16/169/176"
+                            },
+                            // {"name": "Historial walk", "key": ""}, no key
+                            // {"name": "Ideal for families and accompanied children", "key": ""}, no key
+                            {
+                                "id": "tagItem179",
+                                "name": "Moderate walking grade",
+                                "key": "0/16/169/179"
+                            },
+                            {
+                                "id": "tagItem180",
+                                "name": "Partial accessibility - level or ramped access",
+                                "key": "0/16/169/180"
+                            },
+                            // {"name": "Partnership event", "key": ""}, no key
+                            {
+                                "id": "tagItem182",
+                                "name": "Places limited - please book in advance",
+                                "key": "0/16/169/182"
+                            },
+                            {
+                                "id": "tagItem184",
+                                "name": "Please wear suitable boots and clothing",
+                                "key": "0/16/169/184"
+                            },
+                            // {"name": "Refreshment shop, opportunity for refreshments", "key": ""}, no key
+                            // {"name": "Strenuous walking grade", "key": ""}, no key
+                            {
+                                "id": "tagItem187",
+                                "name": "There is a charge for this event",
+                                "key": "0/16/169/187"
+                            },
+                            {
+                                "id": "tagItem188",
+                                "name": "Wildlife walk",
+                                "key": "0/16/169/188"
+                            },
+                            {
+                                "id": "tagItem183",
+                                "name": "Please leave your dog at home",
+                                "key": "0/16/169/183"
+                            },
 
-                    selectedItem: null,
-                    showSelectedItem: false
-                }
-            },
-            filters: {
-                currencydecimal(value) {
-                    return value.toFixed(2)
-                },
-                formatDate(value) {
-                    const monthNames = ["January", "February", "March", "April", "May", "June",
-                        "July", "August", "September", "October", "November", "December"
-                    ];
+                        ],
+                        selectedCategoryOptions: [],
 
-                    let date = new Date(value);
-
-                    console.log(date);
-
-                    const day = date.getDay();
-                    const month = monthNames[date.getMonth()];
-                    const year = date.getFullYear();
-
-                    return (day + " " + month + " " + year)
-                },
-                truncate(string) {
-                    // limit to character length
-                    return string
-                },
-                getTimeOnlyFromDate(date) {
-                    const d = new Date(date);
-                    const hours = d.getHours();
-                    const minutes = d.getMinutes();
-                    return hours.toString() + ":" + (minutes < 10 ? '0' : '') + minutes.toString();
-                }
-            },
-            methods: {
-                getPlainUrl: function () {
-                    return this.url;
-                },
-                getSearchUrl: function () {
-                    return this.searchUrl;
-                },
-                getBaseUrl: function () {
-                    var url = this.url
-                    // Add access token to URL
-                    url = url + '?accessToken=' + this.accessToken;
-                    // Add link depth to URL
-                    url = url + '&linkDepth=' + this.linkDepth;
-                    // Add page size to URL
-                    url = url + '&pageSize=' + this.pageSize;
-
-                    url = url + '&order=' + this.ordering;
-                    // Add page count to URL
-                    if (this.includePageCount) {
-                        url = url + '&totalCount';
+                        selectedItem: null,
+                        showSelectedItem: false
                     }
-                    url = url + '&pageCount';
-                    console.log(url);
-
-                    return url;
                 },
-                previousPage: function () {
-                    if (this.currentPageIndex > 0) {
+                filters: {
+                    currencydecimal(value) {
+                        return value.toFixed(2)
+                    },
+                    formatDate(value) {
+                        const monthNames = ["January", "February", "March", "April", "May", "June",
+                            "July", "August", "September", "October", "November", "December"
+                        ];
+
+                        let date = new Date(value);
+
+                        console.log(date);
+
+                        const day = date.getDay();
+                        const month = monthNames[date.getMonth()];
+                        const year = date.getFullYear();
+
+                        return (day + " " + month + " " + year)
+                    },
+                    truncate(string) {
+                        // limit to character length
+                        return string
+                    },
+                    getTimeOnlyFromDate(date) {
+                        const d = new Date(date);
+                        const hours = d.getHours();
+                        const minutes = d.getMinutes();
+                        return hours.toString() + ":" + (minutes < 10 ? '0' : '') + minutes.toString();
+                    }
+                },
+                methods: {
+                    getPlainUrl: function () {
+                        return this.url;
+                    },
+                    getSearchUrl: function () {
+                        return this.searchUrl;
+                    },
+                    getBaseUrl: function () {
+                        var url = this.url
+                        // Add access token to URL
+                        url = url + '?accessToken=' + this.accessToken;
+                        // Add link depth to URL
+                        url = url + '&linkDepth=' + this.linkDepth;
+                        // Add page size to URL
+                        url = url + '&pageSize=' + this.pageSize;
+
+                        url = url + '&order=' + this.ordering;
+                        // Add page count to URL
+                        if (this.includePageCount) {
+                            url = url + '&totalCount';
+                        }
+                        url = url + '&pageCount';
+                        console.log(url);
+
+                        return url;
+                    },
+                    previousPage: function () {
+                        if (this.currentPageIndex > 0) {
+                            this.loading = true;
+                            var prevPageUrl = this.getBaseUrl() + '&pageIndex=' + (this
+                                .currentPageIndex - 1);
+                            axios
+                                .get(
+                                    prevPageUrl
+                                )
+                                .then(response => {
+                                    this.items = response.data.items;
+                                    this.loading = false;
+                                    console.log("Success!!");
+                                    this.currentPageIndex = this.currentPageIndex - 1;
+                                    this.generatePaginationBtns(this.currentPageIndex);
+                                    this.loading = false;
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                    this.errored = true
+                                })
+                                .finally(() => this.loading = false)
+                        }
+                    },
+                    nextPage: function () {
+                        // Check if next page exceeds page count
+                        if (this.currentPageIndex + 1 < this.pageCount) {
+                            // Set loading
+                            this.loading = true;
+                            // API call with pageIndex parameter
+                            var nextPageUrl = this.getBaseUrl() + '&pageIndex=' + (this
+                                .currentPageIndex + 1);
+
+                            axios
+                                .get(
+                                    nextPageUrl
+                                )
+                                .then(response => {
+                                    this.items = response.data.items;
+                                    this.loading = false;
+
+                                    console.log("Success!!");
+                                    this.currentPageIndex = this.currentPageIndex + 1;
+                                    this.generatePaginationBtns(this.currentPageIndex);
+                                    this.loading = false;
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                    this.errored = true
+                                })
+                                .finally(() => this.loading = false)
+
+                            console.log("Next page button...");
+                        }
+
+                    },
+                    goToPage: function (pageNum) {
                         this.loading = true;
-                        var prevPageUrl = this.getBaseUrl() + '&pageIndex=' + (this.currentPageIndex - 1);
+                        var goToPageUrl = this.getBaseUrl() + '&pageIndex=' + (pageNum - 1);
+
                         axios
                             .get(
-                                prevPageUrl
+                                goToPageUrl
                             )
                             .then(response => {
                                 this.items = response.data.items;
                                 this.loading = false;
+                                this.totalCount = response.data.totalCount;
+                                this.pageCount = response.data.pageCount;
                                 console.log("Success!!");
-                                this.currentPageIndex = this.currentPageIndex - 1;
+                                this.currentPageIndex = pageNum - 1;
                                 this.generatePaginationBtns(this.currentPageIndex);
                                 this.loading = false;
                             })
@@ -405,316 +521,280 @@
                                 this.errored = true
                             })
                             .finally(() => this.loading = false)
-                    }
-                },
-                nextPage: function () {
-                    // Check if next page exceeds page count
-                    if (this.currentPageIndex + 1 < this.pageCount) {
-                        // Set loading
-                        this.loading = true;
-                        // API call with pageIndex parameter
-                        var nextPageUrl = this.getBaseUrl() + '&pageIndex=' + (this.currentPageIndex + 1);
+                    },
+                    generatePaginationBtns: function (currentPage) {
+                        // Reset pageBtns array, before refreshing the buttons to show.
+                        // This is required as a new list of buttons will be generated 
+                        this.pageBtns = [];
+                        // get current page
+                        var currentPageValue = currentPage;
+                        for (let index = 0; index < this.pageCount; index++) {
+                            this.pageBtns.push({
+                                pageNum: index + 1
+                            });
+                        }
+                    },
+                    searchContentType: function (searchTermValue) {
 
+                        if (searchTermValue === "") {
+                            this.searchAlert = true;
+                            return null
+                        } else {
+                            this.loading = true;
+                            this.searchAlert = false;
+                        }
+
+                        let fieldsToSearch = this.searchFields;
+
+                        let arrayOfFields = this.searchFields;
+
+                        // Array to add to query
+                        let orArray = [];
+
+                        arrayOfFields.forEach(element => {
+                            console.log(element);
+                            let objectToAppend = new Object({
+                                "field": element,
+                                "contains": searchTermValue
+                            });
+                            orArray.push(objectToAppend);
+                        });
+
+                        console.log(orArray);
+
+                        let query = [{
+                                "or": orArray
+                            },
+                            {
+                                "field": "sys.versionStatus",
+                                "equalTo": "published"
+                            }
+                        ];
+
+                        /**
+                         * let query = [
+                         *      {
+                         *          "field": "sys.versionStatus",
+                         *          "equalTo": "published"
+                         *      },
+                         *      "or": [
+                         *          {
+                         *              "field": "items.name",
+                         *              "equalTo": "SomethingSearchable"
+                         *          }
+                         *      ]
+                         * ]
+                         */
+
+                        uri = JSON.stringify(query);
+
+                        const encoded = encodeURIComponent(uri);
+                        console.log("Encoded component...");
+                        console.log(encoded);
+
+                        // Axios
                         axios
                             .get(
-                                nextPageUrl
+                                (this.getSearchUrl()) + "search?where=" + encoded, {
+                                    params: {
+                                        contentTypeId: this.contentType,
+                                        accessToken: this.accessToken,
+                                        pageSize: this.pageSize,
+                                        pageIndex: 0,
+                                        linkDepth: 5,
+                                        order: this.ordering
+
+                                    }
+                                }
                             )
                             .then(response => {
                                 this.items = response.data.items;
                                 this.loading = false;
-
-                                console.log("Success!!");
-                                this.currentPageIndex = this.currentPageIndex + 1;
+                                this.totalCount = response.data.totalCount;
+                                this.pageCount = response.data.pageCount;
                                 this.generatePaginationBtns(this.currentPageIndex);
-                                this.loading = false;
+                                console.log("Success!!");
+                                console.log(response);
                             })
                             .catch(error => {
                                 console.log(error)
                                 this.errored = true
                             })
                             .finally(() => this.loading = false)
-
-                        console.log("Next page button...");
-                    }
-
-                },
-                goToPage: function (pageNum) {
-                    this.loading = true;
-                    var goToPageUrl = this.getBaseUrl() + '&pageIndex=' + (pageNum - 1);
-
-                    axios
-                        .get(
-                            goToPageUrl
-                        )
-                        .then(response => {
-                            this.items = response.data.items;
-                            this.loading = false;
-                            this.totalCount = response.data.totalCount;
-                            this.pageCount = response.data.pageCount;
-                            console.log("Success!!");
-                            this.currentPageIndex = pageNum - 1;
-                            this.generatePaginationBtns(this.currentPageIndex);
-                            this.loading = false;
-                        })
-                        .catch(error => {
-                            console.log(error)
-                            this.errored = true
-                        })
-                        .finally(() => this.loading = false)
-                },
-                generatePaginationBtns: function (currentPage) {
-                    // Reset pageBtns array, before refreshing the buttons to show.
-                    // This is required as a new list of buttons will be generated 
-                    this.pageBtns = [];
-                    // get current page
-                    var currentPageValue = currentPage;
-                    for (let index = 0; index < this.pageCount; index++) {
-                        this.pageBtns.push({
-                            pageNum: index + 1
-                        });
-                    }
-                },
-                searchContentType: function (searchTermValue) {
-
-                    if (searchTermValue === "") {
-                        this.searchAlert = true;
-                        return null
-                    } else {
-                        this.loading = true;
-                        this.searchAlert = false;
-                    }
-
-                    let fieldsToSearch = this.searchFields;
-
-                    let arrayOfFields = this.searchFields;
-
-                    // Array to add to query
-                    let orArray = [];
-
-                    arrayOfFields.forEach(element => {
-                        console.log(element);
-                        let objectToAppend = new Object({
-                            "field": element,
-                            "contains": searchTermValue
-                        });
-                        orArray.push(objectToAppend);
-                    });
-
-                    console.log(orArray);
-
-                    let query = [{
-                            "or": orArray
-                        },
-                        {
-                            "field": "sys.versionStatus",
-                            "equalTo": "published"
+                    },
+                    resetSearch: function () {
+                        this.searchTerm = "";
+                        axios
+                            .get(
+                                this.getBaseUrl()
+                            )
+                            .then(response => {
+                                this.items = response.data.items;
+                                this.loading = false;
+                                this.totalCount = response.data.totalCount;
+                                this.pageCount = response.data.pageCount;
+                                this.generatePaginationBtns(this.currentPageIndex);
+                                console.log("Success!!");
+                                console.log(response);
+                            })
+                            .catch(error => {
+                                console.log(error)
+                                this.errored = true
+                            })
+                            .finally(() => this.loading = false)
+                    },
+                    filterList: function (category) {
+                        // Update list on filter change(e.g. checkbox, date picker change)
+                        if (document.getElementById(category.id).checked == true) {
+                            console.log(category + ": is true.");
+                            this.selectedCategoryOptions.push(category);
+                        } else if (document.getElementById(category.id).checked == false) {
+                            let indexOfCat = this.selectedCategoryOptions.indexOf(category);
+                            this.selectedCategoryOptions.splice(indexOfCat, 1);
                         }
-                    ];
+                        this.selectedCategoryOptions = [...new Set(this.selectedCategoryOptions)];
+                        console.log(this.selectedCategoryOptions);
+                        console.log("");
+                        // Search 
+                        /* let query = [{
+                                "or": {
+                                    "field": "entryTitle",
+                                    "contains": "Marie"
+                                }
+                            },
+                            {
+                                "field": "sys.versionStatus",
+                                "equalTo": "published"
+                            }
+                        ]; */
 
-                    /**
-                     * let query = [
-                     *      {
-                     *          "field": "sys.versionStatus",
-                     *          "equalTo": "published"
-                     *      },
-                     *      "or": [
-                     *          {
-                     *              "field": "items.name",
-                     *              "equalTo": "SomethingSearchable"
-                     *          }
-                     *      ]
-                     * ]
-                     */
+                        /* let query = [{
+                            "field": "sys.versionStatus",
+                            "equalTo": "latest"
+                        }, {
+                            "field": "sys.contentTypeId",
+                            "equalTo": "rangerEvents"
+                        }, {
+                            "field": "tags",
+                            "in": ["0/16/169/170"]
+                        }]; */
 
-                    uri = JSON.stringify(query);
+                        // Selected categories, added to query
 
-                    const encoded = encodeURIComponent(uri);
-                    console.log("Encoded component...");
-                    console.log(encoded);
+                        var selectedCategoryOptionsQueryItems = [];
 
-                    // Axios
-                    axios
-                        .get(
-                            (this.getSearchUrl()) + "search?where=" + encoded, {
-                                params: {
-                                    contentTypeId: this.contentType,
-                                    accessToken: this.accessToken,
-                                    pageSize: this.pageSize,
-                                    pageIndex: 0,
-                                    linkDepth: 5,
-                                    order: this.ordering
+                        this.selectedCategoryOptions.forEach(element => {
+                            console.log(element);
+                            let objectToAppend = new Object({
+                                "field": "tags",
+                                "in": element.key
+                            });
+                            selectedCategoryOptionsQueryItems.push(objectToAppend);
+                        });
 
+                        console.log("Selected Category Items...");
+                        console.log(selectedCategoryOptionsQueryItems);
+
+
+                        let query = [{
+                                "field": "sys.versionStatus",
+                                "equalTo": "latest"
+                            }, {
+                                "field": "sys.contentTypeId",
+                                "equalTo": "rangerEvents"
+                            },
+                            {
+                                "and": selectedCategoryOptionsQueryItems
+                            }
+
+                        ];
+
+                        const thing =
+                            "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22field%22%3A%22tags%22%2C%22in%22%3A%5B%220%2F16%2F169%2F176%22%5D%7D%5D";
+
+                        //console.log(decodeURIComponent(thing));
+
+                        uri = JSON.stringify(query);
+
+                        const encoded = encodeURIComponent(uri);
+                        console.log("Encoded component...");
+                        console.log(encoded);
+
+                        console.log(this.getSearchUrl() + "search?where=" + uri);
+
+                        // Axios
+                        axios
+                            .get(
+                                (this.getSearchUrl()) + "search?where=" + encoded, {
+                                    params: {
+                                        contentTypeId: this.contentType,
+                                        accessToken: this.accessToken,
+                                        pageSize: this.pageSize,
+                                        pageIndex: 0,
+                                        linkDepth: 5,
+                                        order: this.ordering
+                                    }
+                                }
+                            )
+                            .then(response => {
+                                this.items = response.data.items;
+                                this.loading = false;
+                                this.totalCount = response.data.totalCount;
+                                this.pageCount = response.data.pageCount;
+                                this.generatePaginationBtns(this.currentPageIndex);
+                                console.log("Success!!");
+                                console.log(response);
+                            })
+                            .catch(error => {
+                                console.log(error)
+                                this.errored = true
+                            })
+                            .finally(() => this.loading = false)
+                    },
+                    setSelectedItem: function (item) {
+                        // 
+                        this.selectedItem = item;
+                        this.showSelectedItem = true;
+                        console.log(this.selectedItem);
+                    },
+                    unSetSelectedItem: function () {
+                        this.selectedItem = null;
+                        this.showSelectedItem = false;
+                    },
+
+                    generateCategoryOptions: function () {
+                        // todo
+                    }
+                },
+                mounted() {
+                    // Add enter key event listener for 'Enter' key search
+                    if (this.showSearch) {
+                        document.getElementById("contentTypeSearchInput")
+                            .addEventListener("keyup", function (event) {
+                                event.preventDefault();
+                                if (event.keyCode === 13) {
+                                    document.getElementById("contentTypeSearchBtn").click();
+                                }
+                            });
+                        window.addEventListener('keydown', function (e) {
+                            if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e
+                                .keyCode ==
+                                13) {
+                                if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
+                                    e.preventDefault();
+                                    return false;
                                 }
                             }
-                        )
-                        .then(response => {
-                            this.items = response.data.items;
-                            this.loading = false;
-                            this.totalCount = response.data.totalCount;
-                            this.pageCount = response.data.pageCount;
-                            this.generatePaginationBtns(this.currentPageIndex);
-                            console.log("Success!!");
-                            console.log(response);
-                        })
-                        .catch(error => {
-                            console.log(error)
-                            this.errored = true
-                        })
-                        .finally(() => this.loading = false)
-                },
-                resetSearch: function () {
-                    this.searchTerm = "";
-                    axios
-                        .get(
-                            this.getBaseUrl()
-                        )
-                        .then(response => {
-                            this.items = response.data.items;
-                            this.loading = false;
-                            this.totalCount = response.data.totalCount;
-                            this.pageCount = response.data.pageCount;
-                            this.generatePaginationBtns(this.currentPageIndex);
-                            console.log("Success!!");
-                            console.log(response);
-                        })
-                        .catch(error => {
-                            console.log(error)
-                            this.errored = true
-                        })
-                        .finally(() => this.loading = false)
-                },
-                filterList: function (category) {
-                    // Update list on filter change(e.g. checkbox, date picker change)
-                    if (document.getElementById(category).checked == true) {
-                        console.log(category + ": is true.");
-                        this.selectedCategoryOptions.push(category);
-                    } else if (document.getElementById(category).checked == false) {
-                        let indexOfCat = this.selectedCategoryOptions.indexOf(category);
-                        this.selectedCategoryOptions.splice(indexOfCat, 1);
+                        }, true);
                     }
-                    this.selectedCategoryOptions = [...new Set(this.selectedCategoryOptions)];
-                    console.log(this.selectedCategoryOptions);
-                    console.log("");
-                    // Search 
-                    /* let query = [{
-                            "or": {
-                                "field": "entryTitle",
-                                "contains": "Marie"
-                            }
-                        },
-                        {
-                            "field": "sys.versionStatus",
-                            "equalTo": "published"
-                        }
-                    ]; */
+                    this.resetSearch();
+                    this.generateCategoryOptions();
+                    // Add category buttons
 
-                    /* let query = [{
-                        "field": "sys.versionStatus",
-                        "equalTo": "latest"
-                    }, {
-                        "field": "sys.contentTypeId",
-                        "equalTo": "rangerEvents"
-                    }, {
-                        "field": "tags",
-                        "in": ["0/16/169/170"]
-                    }]; */
-
-                    let query = [{
-                        "field": "sys.versionStatus",
-                        "equalTo": "latest"
-                    }, {
-                        "field": "sys.contentTypeId",
-                        "equalTo": "rangerEvents"
-                    }, {
-                        "field": "tags",
-                        "in": ["0/16/169/170"]
-                    }];
-
-                    const thing =
-                        "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22field%22%3A%22tags%22%2C%22in%22%3A%5B%220%2F16%2F169%2F176%22%5D%7D%5D";
-
-                    console.log(decodeURIComponent(thing));
-
-                    
-
-                    uri = JSON.stringify(query);
-
-                    const encoded = encodeURIComponent(uri);
-                    console.log("Encoded component...");
-                    console.log(encoded);
-
-                    console.log(this.getSearchUrl() + "search?where=" + uri);
-
-                    // Axios
-                    axios
-                        .get(
-                            (this.getSearchUrl()) + "search?where=" + encoded, {
-                                params: {
-                                    contentTypeId: this.contentType,
-                                    accessToken: this.accessToken,
-                                    pageSize: this.pageSize,
-                                    pageIndex: 0,
-                                    linkDepth: 5,
-                                    order: this.ordering
-                                }
-                            }
-                        )
-                        .then(response => {
-                            this.items = response.data.items;
-                            this.loading = false;
-                            this.totalCount = response.data.totalCount;
-                            this.pageCount = response.data.pageCount;
-                            this.generatePaginationBtns(this.currentPageIndex);
-                            console.log("Success!!");
-                            console.log(response);
-                        })
-                        .catch(error => {
-                            console.log(error)
-                            this.errored = true
-                        })
-                        .finally(() => this.loading = false)
-                },
-                setSelectedItem: function (item) {
-                    // 
-                    this.selectedItem = item;
-                    this.showSelectedItem = true;
-                    console.log(this.selectedItem);
-                },
-                unSetSelectedItem: function () {
-                    this.selectedItem = null;
-                    this.showSelectedItem = false;
-                },
-
-                generateCategoryOptions: function () {
-                    // todo
                 }
-            },
-            mounted() {
-                // Add enter key event listener for 'Enter' key search
-                if (this.showSearch) {
-                    document.getElementById("contentTypeSearchInput")
-                        .addEventListener("keyup", function (event) {
-                            event.preventDefault();
-                            if (event.keyCode === 13) {
-                                document.getElementById("contentTypeSearchBtn").click();
-                            }
-                        });
-                    window.addEventListener('keydown', function (e) {
-                        if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode ==
-                            13) {
-                            if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
-                                e.preventDefault();
-                                return false;
-                            }
-                        }
-                    }, true);
-                }
-                this.resetSearch();
-                this.generateCategoryOptions();
-                // Add category buttons
+            })
 
-            }
-        })
+        })();
     </script>
 </body>
 
