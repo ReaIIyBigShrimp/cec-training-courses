@@ -104,21 +104,23 @@
                                 <li v-if="showFirstLastBtns" class="page-item">
                                     <!-- Can be set to show/hide by setting the showFirstLastBtns to true/false -->
                                     <button class="page-link" type="button" aria-label="Next" v-on:click="goToPage(1)">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </button>
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </button>
                                 </li>
-                                <li v-if="showPageBtns" v-for="pageBtn in pageBtns" class="page-item" v-bind:class="{ active: currentPageIndex == pageBtn.pageNum - 1 }"><button
-                                            class="page-link" type="button"
-                                            v-on:click="goToPage(pageBtn.pageNum)">{{ pageBtn.pageNum }}</button></li>
+                                <li v-if="showPageBtns" v-for="pageBtn in pageBtns" class="page-item"
+                                    v-bind:class="{ active: currentPageIndex == pageBtn.pageNum - 1 }"><button
+                                        class="page-link" type="button"
+                                        v-on:click="goToPage(pageBtn.pageNum)">{{ pageBtn.pageNum }}</button></li>
                                 <!-- Numbered pagination buttons. Can be hidden/shown by toggling showPageBtns to true/false -->
                                 <li v-if="showFirstLastBtns" class="page-item">
                                     <!-- Can be set to show/hide by setting the showFirstLastBtns to true/false -->
                                     <button class="page-link" type="button" aria-label="Next"
-                                            v-on:click="goToPage(pageCount)">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </button>
+                                        v-on:click="goToPage(pageCount)">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </button>
                                 </li>
-                                <li class="page-item" v-bind:class="{ disabled: currentPageIndex+1 == pageCount || loading }">
+                                <li class="page-item"
+                                    v-bind:class="{ disabled: currentPageIndex+1 == pageCount || loading }">
                                     <button class="page-link" type="button" v-on:click="nextPage">Next</button>
                                 </li>
                             </ul>
@@ -140,21 +142,26 @@
                             <!-- <h6 class="card-subtitle mb-2 text-muted">Start: {{ item.dateStartEnd.from | formatDate }}
                                     <br>End: {{ item.dateStartEnd.to | formatDate }}</h6> -->
                             <p class="card-text" v-html="item.description"></p>
-                            <a v-on:click="setSelectedItem(item)" role="button" class="cec-button">View Event<span class="visually-hidden">: </span><span class="visually-hidden" v-html="item.entryTitle"></span> </a>
+                            <a v-on:click="setSelectedItem(item)" role="button" class="cec-button">View Event<span
+                                    class="visually-hidden">: </span><span class="visually-hidden"
+                                    v-html="item.entryTitle"></span> </a>
                         </div>
                     </div>
                 </div>
                 <!-- Selected event details -->
-    
+
                 <div v-if="showSelectedItem" class="selectedItem">
-                    <a v-on:click="unSetSelectedItem" role="button" class="cec-button cec-button--back">Back to results</a>
+                    <a v-on:click="unSetSelectedItem" role="button" class="cec-button cec-button--back">Back to
+                        results</a>
                     <h1 class="selected-item-details--title text-center">{{ selectedItem.title }}</h1>
                     <hr>
                     <div class="selected-item-details">
-    
+
                         <div class="row">
                             <div class="col-12">
-                                <img class="rounded mx-auto d-block" v-bind:src="'https://www.cheshireeast.gov.uk/' + selectedItem.image.asset.sys.uri" v-bind:alt="selectedItem.title">
+                                <img class="rounded mx-auto d-block"
+                                    v-bind:src="'https://www.cheshireeast.gov.uk/' + selectedItem.image.asset.sys.uri"
+                                    v-bind:alt="selectedItem.title">
                             </div>
                             <div class="col-lg-6">
                                 <h2>Description</h2>
@@ -162,38 +169,40 @@
                                 <p><strong>Time:</strong> {{ selectedItem.dateStartEnd.from | getTimeOnlyFromDate }} -
                                     {{ selectedItem.dateStartEnd.to | getTimeOnlyFromDate }}</p>
                                 <p><strong>Leader(s):</strong> {{ selectedItem.leaders }}</p>
-                                <p><strong>Booking:</strong> <a v-bind:href="selectedItem.eventbriteLink">{{ selectedItem.title }}</a></p>
-                                <p><strong>More information:</strong> <span v-html="selectedItem.eventInformation"></span></p>
+                                <p><strong>Booking:</strong> <a
+                                        v-bind:href="selectedItem.eventbriteLink">{{ selectedItem.title }}</a></p>
+                                <p><strong>More information:</strong> <span
+                                        v-html="selectedItem.eventInformation"></span></p>
                                 <p><strong>Tags:</strong>
-                                <ul>
-                                    <li v-for="tag in selectedItem.tags">
-                                        {{ tag.name }}
-                                    </li>
-                                </ul>
+                                    <ul>
+                                        <li v-for="tag in selectedItem.tags">
+                                            {{ tag.name }}
+                                        </li>
+                                    </ul>
                                 </p>
                             </div>
                             <div class="col-lg-6">
                                 <p><strong>Meeting point:</strong> <span v-html="selectedItem.meetingPoint"></span></p>
                             </div>
                         </div>
-    
+
                     </div>
                 </div>
-    
+
                 <div v-if="!showSelectedItem" class="col-md-4">
                     <div class="search-options-container">
                         <h2 class="mt-0">Search for an event</h2>
                         <div class="search-options">
                             <div v-if="showSearch" class="input-group mb-3 content-type-search">
-                                <input type="text" class="form-control me-2" placeholder="Type here..." v-model="searchTerm"
-                                        aria-label="Recipient's username" aria-describedby="basic-addon2"
-                                        id="contentTypeSearchInput">
+                                <input type="text" class="form-control me-2" placeholder="Type here..."
+                                    v-model="searchTerm" aria-label="Recipient's username"
+                                    aria-describedby="basic-addon2" id="contentTypeSearchInput">
                                 <div class="input-group-append">
                                     <button type="button" class="btn btn-outline-secondary"
-                                            v-on:click="searchContentType(searchTerm)"
-                                            id="contentTypeSearchBtn">Search</button>
+                                        v-on:click="searchContentType(searchTerm)"
+                                        id="contentTypeSearchBtn">Search</button>
                                     <button v-if="searchTerm.length > 0" class="btn btn-outline-secondary" type="button"
-                                            v-on:click="resetSearch">Clear Search</button>
+                                        v-on:click="resetSearch">Clear Search</button>
                                 </div>
                             </div>
                             <div v-if="showSearch" class="search-error-messages">
@@ -206,28 +215,28 @@
                             <!-- <label for="meeting-time">Date range</label> -->
                             <h2>Date range</h2>
                             <label for="start-date">From</label>
-    
-                            <input type="datetime-local" id="start-date" name="start-date" value="2020-06-12T19:30"
-                                    min="2020-06-07T00:00" max="2025-06-14T00:00">
+
+                            <input type="datetime-local" id="start-date" name="start-date" v-model="fromDate"
+                                min="2020-06-07T00:00" max="2025-06-14T00:00" v-on:change="filterFromDates()">
                             <label for="end-date">To</label>
-                            <input type="datetime-local" id="end-date" name="end-date" value="2022-06-12T19:30"
-                                    min="2020-06-07T00:00" max="2025-06-14T00:00">
+                            <input type="datetime-local" id="end-date" name="end-date" v-model="toDate"
+                                min="2020-06-07T00:00" max="2025-06-14T00:00" v-on:change="filterFromDates()">
                         </div>
-    
+
                         <div class="category-options">
                             <h2 class="mb-3">Categories</h2>
                             <div class="form-check" v-for="category in categoryOptions">
-                                <input class="form-check-input" type="checkbox" name="categoryOption" v-bind:id="category.id"
-                                        v-on:change="filterList(category)">
+                                <input class="form-check-input" type="checkbox" name="categoryOption"
+                                    v-bind:id="category.id" v-on:change="filterList(category)">
                                 <label class="form-check-label" v-bind:for="category.id">{{ category.name }}</label>
                             </div>
                         </div> <!-- End of category options -->
-    
-    
+
+
                     </div>
                 </div>
             </div>
-    
+
         </div>
         <!-- End of user editable region -->
 
@@ -323,6 +332,10 @@
                         // Search
                         searchTerm: "",
                         searchAlert: false, // Used to check whether to show the 'Please enter a search term alert'. Leave as false.
+
+                        // Date Range
+                        fromDate: "",
+                        toDate: "",
 
                         // Category options
                         categoryOptions: [{
@@ -554,91 +567,197 @@
                     },
                     searchContentType: function (searchTermValue) {
 
-                        if (searchTermValue === "") {
-                            this.searchAlert = true;
-                            return null
+                        if (this.fromDate == "" || this.toDate == "") {
+                            /* if (searchTermValue === "") {
+                                this.searchAlert = true;
+                                return null
+                            } else {
+                                this.loading = true;
+                                this.searchAlert = false;
+                            } */
+
+                            let fieldsToSearch = this.searchFields;
+
+                            let arrayOfFields = this.searchFields;
+
+                            // Array to add to query
+                            let orArray = [];
+
+                            arrayOfFields.forEach(element => {
+                                console.log(element);
+                                let objectToAppend = new Object({
+                                    "field": element,
+                                    "contains": searchTermValue
+                                });
+                                orArray.push(objectToAppend);
+                            });
+
+                            console.log(orArray);
+
+                            let query = [{
+                                    "or": orArray
+                                },
+                                {
+                                    "field": "sys.versionStatus",
+                                    "equalTo": "published"
+                                },
+                                {
+                                    "field": "sys.contentTypeId",
+                                    "equalTo": "rangerEvents"
+                                },
+                                {
+                                    "field": "dateStartEnd.from",
+                                    "from": this.fromDate,
+                                },
+                                {
+                                    "field": "dateStartEnd.to",
+                                    "to": this.toDate,
+                                }
+                            ];
+
+                            /**
+                             * let query = [
+                             *      {
+                             *          "field": "sys.versionStatus",
+                             *          "equalTo": "published"
+                             *      },
+                             *      "or": [
+                             *          {
+                             *              "field": "items.name",
+                             *              "equalTo": "SomethingSearchable"
+                             *          }
+                             *      ]
+                             * ]
+                             */
+
+                            uri = JSON.stringify(query);
+
+                            const encoded = encodeURIComponent(uri);
+                            console.log("Encoded component...");
+                            console.log(encoded);
+
+                            // Axios
+                            axios
+                                .get(
+                                    (this.getSearchUrl()) + "search?where=" + encoded, {
+                                        params: {
+                                            contentTypeId: this.contentType,
+                                            accessToken: this.accessToken,
+                                            pageSize: this.pageSize,
+                                            pageIndex: 0,
+                                            linkDepth: 5,
+                                            order: this.ordering
+
+                                        }
+                                    }
+                                )
+                                .then(response => {
+                                    this.items = response.data.items;
+                                    this.loading = false;
+                                    this.totalCount = response.data.totalCount;
+                                    this.pageCount = response.data.pageCount;
+                                    this.generatePaginationBtns(this.currentPageIndex);
+                                    console.log("Success!!");
+                                    console.log(response);
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                    this.errored = true
+                                })
+                                .finally(() => this.loading = false)
+
                         } else {
-                            this.loading = true;
-                            this.searchAlert = false;
+                            if (searchTermValue === "") {
+                                this.searchAlert = true;
+                                return null
+                            } else {
+                                this.loading = true;
+                                this.searchAlert = false;
+                            }
+
+                            let fieldsToSearch = this.searchFields;
+
+                            let arrayOfFields = this.searchFields;
+
+                            // Array to add to query
+                            let orArray = [];
+
+                            arrayOfFields.forEach(element => {
+                                console.log(element);
+                                let objectToAppend = new Object({
+                                    "field": element,
+                                    "contains": searchTermValue
+                                });
+                                orArray.push(objectToAppend);
+                            });
+
+                            console.log(orArray);
+
+                            let query = [{
+                                    "or": orArray
+                                },
+                                {
+                                    "field": "sys.versionStatus",
+                                    "equalTo": "published"
+                                },
+                                {
+                                    "field": "sys.contentTypeId",
+                                    "equalTo": "rangerEvents"
+                                }
+                            ];
+
+                            /**
+                             * let query = [
+                             *      {
+                             *          "field": "sys.versionStatus",
+                             *          "equalTo": "published"
+                             *      },
+                             *      "or": [
+                             *          {
+                             *              "field": "items.name",
+                             *              "equalTo": "SomethingSearchable"
+                             *          }
+                             *      ]
+                             * ]
+                             */
+
+                            uri = JSON.stringify(query);
+
+                            const encoded = encodeURIComponent(uri);
+                            console.log("Encoded component...");
+                            console.log(encoded);
+
+                            // Axios
+                            axios
+                                .get(
+                                    (this.getSearchUrl()) + "search?where=" + encoded, {
+                                        params: {
+                                            contentTypeId: this.contentType,
+                                            accessToken: this.accessToken,
+                                            pageSize: this.pageSize,
+                                            pageIndex: 0,
+                                            linkDepth: 5,
+                                            order: this.ordering
+
+                                        }
+                                    }
+                                )
+                                .then(response => {
+                                    this.items = response.data.items;
+                                    this.loading = false;
+                                    this.totalCount = response.data.totalCount;
+                                    this.pageCount = response.data.pageCount;
+                                    this.generatePaginationBtns(this.currentPageIndex);
+                                    console.log("Success!!");
+                                    console.log(response);
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                    this.errored = true
+                                })
+                                .finally(() => this.loading = false)
                         }
 
-                        let fieldsToSearch = this.searchFields;
-
-                        let arrayOfFields = this.searchFields;
-
-                        // Array to add to query
-                        let orArray = [];
-
-                        arrayOfFields.forEach(element => {
-                            console.log(element);
-                            let objectToAppend = new Object({
-                                "field": element,
-                                "contains": searchTermValue
-                            });
-                            orArray.push(objectToAppend);
-                        });
-
-                        console.log(orArray);
-
-                        let query = [{
-                                "or": orArray
-                            },
-                            {
-                                "field": "sys.versionStatus",
-                                "equalTo": "published"
-                            }
-                        ];
-
-                        /**
-                         * let query = [
-                         *      {
-                         *          "field": "sys.versionStatus",
-                         *          "equalTo": "published"
-                         *      },
-                         *      "or": [
-                         *          {
-                         *              "field": "items.name",
-                         *              "equalTo": "SomethingSearchable"
-                         *          }
-                         *      ]
-                         * ]
-                         */
-
-                        uri = JSON.stringify(query);
-
-                        const encoded = encodeURIComponent(uri);
-                        console.log("Encoded component...");
-                        console.log(encoded);
-
-                        // Axios
-                        axios
-                            .get(
-                                (this.getSearchUrl()) + "search?where=" + encoded, {
-                                    params: {
-                                        contentTypeId: this.contentType,
-                                        accessToken: this.accessToken,
-                                        pageSize: this.pageSize,
-                                        pageIndex: 0,
-                                        linkDepth: 5,
-                                        order: this.ordering
-
-                                    }
-                                }
-                            )
-                            .then(response => {
-                                this.items = response.data.items;
-                                this.loading = false;
-                                this.totalCount = response.data.totalCount;
-                                this.pageCount = response.data.pageCount;
-                                this.generatePaginationBtns(this.currentPageIndex);
-                                console.log("Success!!");
-                                console.log(response);
-                            })
-                            .catch(error => {
-                                console.log(error)
-                                this.errored = true
-                            })
-                            .finally(() => this.loading = false)
                     },
                     resetSearch: function () {
                         this.searchTerm = "";
@@ -783,6 +902,11 @@
 
                     generateCategoryOptions: function () {
                         // todo
+                    },
+                    filterFromDates: function () {
+                        console.log("ready to filter from dates...");
+                        console.log(this.fromDate);
+                        console.log(this.toDate);
                     }
                 },
                 mounted() {
