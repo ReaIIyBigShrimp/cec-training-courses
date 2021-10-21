@@ -139,8 +139,8 @@
                     <div v-if="!showSelectedItem" v-for="item in items" class="card item-card">
                         <div class="card-body">
                             <h2 class="card-title fs-3 mb-4">{{ item.entryTitle }}</h2>
-                            <!-- <h6 class="card-subtitle mb-2 text-muted">Start: {{ item.dateStartEnd.from | formatDate }}
-                                    <br>End: {{ item.dateStartEnd.to | formatDate }}</h6> -->
+                            <h6 class="card-subtitle mb-2 text-muted">Start: {{ item.dateStartEnd.from | formatDate }}
+                                <br>End: {{ item.dateStartEnd.to | formatDate }}</h6>
                             <p class="card-text" v-html="item.description"></p>
                             <a v-on:click="setSelectedItem(item)" role="button" class="cec-button">View Event<span
                                     class="visually-hidden">: </span><span class="visually-hidden"
@@ -567,7 +567,7 @@
                     },
                     searchContentType: function (searchTermValue) {
 
-                        if (this.fromDate == "" || this.toDate == "") {
+                        if (this.fromDate != "") {
                             /* if (searchTermValue === "") {
                                 this.searchAlert = true;
                                 return null
@@ -591,13 +591,13 @@
                                 });
                                 orArray.push(objectToAppend);
                             });
-
+                            console.log(this.fromDate);
                             console.log(orArray);
+                            console.log(decodeURIComponent(
+                                "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22or%22%3A%5B%7B%22field%22%3A%22entryTitle%22%2C%22freeText%22%3A%22Marie%22%2C%22weight%22%3A30%7D%2C%7B%22field%22%3A%22entryDescription%22%2C%22freeText%22%3A%22Marie%22%2C%22weight%22%3A20%7D%5D%7D%2C%7B%22or%22%3A%5B%7B%22field%22%3A%22dateStartEnd.from%22%2C%22greaterThanOrEqualTo%22%3A%222019-12-30T00%3A00%3A00.000Z%22%7D%2C%7B%22field%22%3A%22dateStartEnd.to%22%2C%22greaterThanOrEqualTo%22%3A%222019-12-30T00%3A00%3A00.000Z%22%7D%5D%7D%5D"
+                                ));
 
-                            let query = [{
-                                    "or": orArray
-                                },
-                                {
+                            /* let query = [{
                                     "field": "sys.versionStatus",
                                     "equalTo": "published"
                                 },
@@ -606,14 +606,54 @@
                                     "equalTo": "rangerEvents"
                                 },
                                 {
-                                    "field": "dateStartEnd.from",
-                                    "from": this.fromDate,
-                                },
-                                {
-                                    "field": "dateStartEnd.to",
-                                    "to": this.toDate,
+                                    "or": [{
+                                            "field": "dateStartEnd.from",
+                                            "greaterThanOrEqualTo": this.fromDate
+                                        },
+                                        {
+
+                                        },
+                                        {
+                                            "or": orArray
+                                        }
+                                    ]
                                 }
-                            ];
+                                 ,
+                                                                {
+                                                                    "field": "dateStartEnd.to",
+                                                                    "greaterThanOrEqualTo": "+5Y",
+                                                                } 
+                            ]; */
+
+                            console.log("From date: "+typeof(this.fromDate));
+
+                            let query = [{
+                                "field": "sys.versionStatus",
+                                "equalTo": "latest"
+                            }, {
+                                "field": "sys.contentTypeId",
+                                "equalTo": "rangerEvents"
+                            }, {
+                                "or": [{
+                                    "field": "entryTitle",
+                                    "freeText": "Marie",
+                                    "weight": 30
+                                }, {
+                                    "field": "entryDescription",
+                                    "freeText": "Marie",
+                                    "weight": 20
+                                }]
+                            }, {
+                                "or": [{
+                                    "field": "dateStartEnd.from",
+                                    "greaterThanOrEqualTo": (this.fromDate).toISOString()
+                                }, {
+                                    "field": "dateStartEnd.to",
+                                    "greaterThanOrEqualTo": "2019-12-30T00:00:00.000Z"
+                                }]
+                            }]
+
+                            console.log(query);
 
                             /**
                              * let query = [
