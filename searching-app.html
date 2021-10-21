@@ -212,15 +212,14 @@
                             </div>
                         </div>
                         <div class="date-range">
-                            <!-- <label for="meeting-time">Date range</label> -->
                             <h2>Date range</h2>
                             <label for="start-date">From</label>
 
                             <input type="datetime-local" id="start-date" name="start-date" v-model="fromDate"
-                                min="2020-06-07T00:00" max="2025-06-14T00:00" v-on:change="filterFromDates()">
+                                min="2020-06-07T00:00" max="2025-06-14T00:00" v-on:change="searchContentType()">
                             <label for="end-date">To</label>
                             <input type="datetime-local" id="end-date" name="end-date" v-model="toDate"
-                                min="2020-06-07T00:00" max="2025-06-14T00:00" v-on:change="filterFromDates()">
+                                min="2020-06-07T00:00" max="2025-06-14T00:00" v-on:change="searchContentType()">
                         </div>
 
                         <div class="category-options">
@@ -428,7 +427,7 @@
 
                         let date = new Date(value);
 
-                        console.log(date);
+                        //console.log(date);
 
                         const day = date.getDay();
                         const month = monthNames[date.getMonth()];
@@ -566,6 +565,9 @@
                         }
                     },
                     searchContentType: function (searchTermValue) {
+                        if (searchTermValue != undefined) {
+                            this.searchTerm = searchTermValue;
+                        }
 
                         if (this.fromDate != "") {
                             /* if (searchTermValue === "") {
@@ -595,7 +597,7 @@
                             console.log(orArray);
                             console.log(decodeURIComponent(
                                 "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22or%22%3A%5B%7B%22field%22%3A%22entryTitle%22%2C%22freeText%22%3A%22Marie%22%2C%22weight%22%3A30%7D%2C%7B%22field%22%3A%22entryDescription%22%2C%22freeText%22%3A%22Marie%22%2C%22weight%22%3A20%7D%5D%7D%2C%7B%22or%22%3A%5B%7B%22field%22%3A%22dateStartEnd.from%22%2C%22greaterThanOrEqualTo%22%3A%222019-12-30T00%3A00%3A00.000Z%22%7D%2C%7B%22field%22%3A%22dateStartEnd.to%22%2C%22greaterThanOrEqualTo%22%3A%222019-12-30T00%3A00%3A00.000Z%22%7D%5D%7D%5D"
-                                ));
+                            ));
 
                             /* let query = [{
                                     "field": "sys.versionStatus",
@@ -625,33 +627,93 @@
                                                                 } 
                             ]; */
 
-                            console.log("From date: "+typeof(this.fromDate));
+                            console.log("From date: " + typeof (this.fromDate));
+                            console.log(new Date((this.fromDate)).toISOString());
+                            console.log(new Date((this.toDate)).toISOString());
 
-                            let query = [{
-                                "field": "sys.versionStatus",
-                                "equalTo": "latest"
-                            }, {
-                                "field": "sys.contentTypeId",
-                                "equalTo": "rangerEvents"
-                            }, {
-                                "or": [{
-                                    "field": "entryTitle",
-                                    "freeText": "Marie",
-                                    "weight": 30
+                            console.log(searchTermValue);
+
+
+                            let query;
+                            // If search term and date are selected, use this query
+                            if (this.searchTerm != "" && this.fromDate != "" && this.toDate != "") {
+                                console.log("Search and date query...");
+                                query = [{
+                                    "field": "sys.versionStatus",
+                                    "equalTo": "latest"
                                 }, {
-                                    "field": "entryDescription",
-                                    "freeText": "Marie",
-                                    "weight": 20
-                                }]
-                            }, {
-                                "or": [{
-                                    "field": "dateStartEnd.from",
-                                    "greaterThanOrEqualTo": (this.fromDate).toISOString()
+                                    "field": "sys.contentTypeId",
+                                    "equalTo": "rangerEvents"
                                 }, {
-                                    "field": "dateStartEnd.to",
-                                    "greaterThanOrEqualTo": "2019-12-30T00:00:00.000Z"
+                                    "or": [{
+                                        "field": "entryTitle",
+                                        "freeText": this.searchTerm,
+                                        "weight": 30
+                                    }, {
+                                        "field": "entryDescription",
+                                        "freeText": this.searchTerm,
+                                        "weight": 20
+                                    }]
+                                }, {
+                                    "and": [{
+                                        "field": "dateStartEnd.from",
+                                        "greaterThanOrEqualTo": new Date((this
+                                            .fromDate)).toISOString()
+                                    }, {
+                                        "field": "dateStartEnd.to",
+                                        "greaterThanOrEqualTo": "2019-12-30T00:00:00.000Z"
+                                    }]
                                 }]
-                            }]
+                            } else {
+                                // query without search term
+                                console.log("Date query only...");
+
+                                //console.log(decodeURIComponent("https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22or%22%3A%5B%7B%22and%22%3A%5B%7B%22field%22%3A%22dateStartEnd.from%22%2C%22greaterThanOrEqualTo%22%3A%222020-05-30T23%3A00%3A00.000Z%22%7D%2C%7B%22field%22%3A%22dateStartEnd.from%22%2C%22lessThanOrEqualTo%22%3A%222021-09-26T23%3A00%3A00.000Z%22%7D%5D%7D%2C%7B%22and%22%3A%5B%7B%22field%22%3A%22dateStartEnd.to%22%2C%22greaterThanOrEqualTo%22%3A%222020-05-30T23%3A00%3A00.000Z%22%7D%2C%7B%22field%22%3A%22dateStartEnd.to%22%2C%22lessThanOrEqualTo%22%3A%222021-09-26T23%3A00%3A00.000Z%22%7D%5D%7D%5D%7D%5D"));
+
+                                let arrayThing = [{
+                                    "field": "sys.versionStatus",
+                                    "equalTo": "latest"
+                                }, {
+                                    "field": "sys.contentTypeId",
+                                    "equalTo": "rangerEvents"
+                                }, {
+                                    "or": [{
+                                        "and": [{
+                                            "field": "dateStartEnd.from",
+                                            "greaterThanOrEqualTo": "2020-05-30T23:00:00.000Z"
+                                        }, {
+                                            "field": "dateStartEnd.from",
+                                            "lessThanOrEqualTo": "2021-09-26T23:00:00.000Z"
+                                        }]
+                                    }, {
+                                        "and": [{
+                                            "field": "dateStartEnd.to",
+                                            "greaterThanOrEqualTo": "2020-05-30T23:00:00.000Z"
+                                        }, {
+                                            "field": "dateStartEnd.to",
+                                            "lessThanOrEqualTo": "2021-09-26T23:00:00.000Z"
+                                        }]
+                                    }]
+                                }]
+
+                                query = [{
+                                    "field": "sys.versionStatus",
+                                    "equalTo": "latest"
+                                }, {
+                                    "field": "sys.contentTypeId",
+                                    "equalTo": "rangerEvents"
+                                }, {
+                                    "or": [{
+                                        "field": "dateStartEnd.from",
+                                        "greaterThanOrEqualTo": new Date((this
+                                            .fromDate)).toISOString()
+                                    }, {
+                                        "field": "dateStartEnd.to",
+                                        "lessThanOrEqualTo": "2019-12-30T00:00:00.000Z"
+                                    }]
+                                }]
+                            }
+
 
                             console.log(query);
 
@@ -889,7 +951,7 @@
                         const thing =
                             "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22field%22%3A%22tags%22%2C%22in%22%3A%5B%220%2F16%2F169%2F176%22%5D%7D%5D";
 
-                        //console.log(decodeURIComponent(thing));
+                        //console.log(decodeURIComponent("https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22or%22%3A%5B%7B%22and%22%3A%5B%7B%22field%22%3A%22dateStartEnd.from%22%2C%22greaterThanOrEqualTo%22%3A%222020-05-30T23%3A00%3A00.000Z%22%7D%2C%7B%22field%22%3A%22dateStartEnd.from%22%2C%22lessThanOrEqualTo%22%3A%222021-09-26T23%3A00%3A00.000Z%22%7D%5D%7D%2C%7B%22and%22%3A%5B%7B%22field%22%3A%22dateStartEnd.to%22%2C%22greaterThanOrEqualTo%22%3A%222020-05-30T23%3A00%3A00.000Z%22%7D%2C%7B%22field%22%3A%22dateStartEnd.to%22%2C%22lessThanOrEqualTo%22%3A%222021-09-26T23%3A00%3A00.000Z%22%7D%5D%7D%5D%7D%5D"));
 
                         uri = JSON.stringify(query);
 
