@@ -7,6 +7,9 @@
     <title>Searching App | Date Range</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="./vanilla-toast.css">
+    <script src="./vanilla-toast.js"></script>
+
     <style>
         table p {
             margin-bottom: 0;
@@ -192,7 +195,19 @@
                 <div v-if="!showSelectedItem" class="col-md-4">
                     <div class="search-options-container">
                         <h2 class="mt-0">Search for an event</h2>
-                        <div class="search-options">
+
+                        <div class="date-range">
+                            <h2>Date range</h2>
+                            <label for="start-date">From</label>
+
+                            <input type="date" id="start-date" name="start-date" v-model="fromDate" min="2020-06-07"
+                                max="2025-06-14" v-on:change="searchContentType()">
+                            <label for="end-date">To</label>
+                            <input type="date" id="end-date" name="end-date" v-model="toDate" min="2020-06-07"
+                                max="2025-06-14" v-on:change="searchContentType()">
+                        </div>
+
+                        <div class="search-options mt-3">
                             <div v-if="showSearch" class="input-group mb-3 content-type-search">
                                 <input type="text" class="form-control me-2" placeholder="Type here..."
                                     v-model="searchTerm" aria-label="Recipient's username"
@@ -210,16 +225,6 @@
                                     Please enter a search term.
                                 </div>
                             </div>
-                        </div>
-                        <div class="date-range">
-                            <h2>Date range</h2>
-                            <label for="start-date">From</label>
-
-                            <input type="datetime-local" id="start-date" name="start-date" v-model="fromDate"
-                                min="2020-06-07T00:00" max="2025-06-14T00:00" v-on:change="searchContentType()">
-                            <label for="end-date">To</label>
-                            <input type="datetime-local" id="end-date" name="end-date" v-model="toDate"
-                                min="2020-06-07T00:00" max="2025-06-14T00:00" v-on:change="searchContentType()">
                         </div>
 
                         <div class="category-options">
@@ -267,6 +272,14 @@
                 <p>Total results: <strong>{{ totalCount }}</strong></p>
                 <p>Current page: <strong>{{ currentPageIndex+1 }}</strong></p>
             </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="vanilla-toast-container">
+        <div id="vanilla-toast" class="default">
+            <div id="vanilla-toast-text">some text.</div>
+            <span id="vanilla-toast-close-button" style="display: none;">✖</span>
         </div>
     </div>
 
@@ -488,6 +501,7 @@
                                     this.currentPageIndex = this.currentPageIndex - 1;
                                     this.generatePaginationBtns(this.currentPageIndex);
                                     this.loading = false;
+                                    vanillaToast.show('Results Updated');
                                 })
                                 .catch(error => {
                                     console.log(error)
@@ -517,6 +531,7 @@
                                     this.currentPageIndex = this.currentPageIndex + 1;
                                     this.generatePaginationBtns(this.currentPageIndex);
                                     this.loading = false;
+                                    vanillaToast.show('Results Updated');
                                 })
                                 .catch(error => {
                                     console.log(error)
@@ -545,6 +560,7 @@
                                 this.currentPageIndex = pageNum - 1;
                                 this.generatePaginationBtns(this.currentPageIndex);
                                 this.loading = false;
+                                vanillaToast.show('Results Updated');
                             })
                             .catch(error => {
                                 console.log(error)
@@ -661,7 +677,8 @@
                                             .fromDate)).toISOString()
                                     }, {
                                         "field": "dateStartEnd.to",
-                                        "greaterThanOrEqualTo": "2019-12-30T00:00:00.000Z"
+                                        "lessThanOrEqualTo": new Date((this
+                                            .toDate)).toISOString()
                                     }]
                                 }]
                             } else {
@@ -703,13 +720,14 @@
                                     "field": "sys.contentTypeId",
                                     "equalTo": "rangerEvents"
                                 }, {
-                                    "or": [{
+                                    "and": [{
                                         "field": "dateStartEnd.from",
                                         "greaterThanOrEqualTo": new Date((this
                                             .fromDate)).toISOString()
                                     }, {
                                         "field": "dateStartEnd.to",
-                                        "lessThanOrEqualTo": "2019-12-30T00:00:00.000Z"
+                                        "lessThanOrEqualTo": new Date((this
+                                            .toDate)).toISOString()
                                     }]
                                 }]
                             }
@@ -761,6 +779,7 @@
                                     this.generatePaginationBtns(this.currentPageIndex);
                                     console.log("Success!!");
                                     console.log(response);
+                                    vanillaToast.show('Results Updated');
                                 })
                                 .catch(error => {
                                     console.log(error)
@@ -852,6 +871,7 @@
                                     this.generatePaginationBtns(this.currentPageIndex);
                                     console.log("Success!!");
                                     console.log(response);
+                                    vanillaToast.show('Results Updated');
                                 })
                                 .catch(error => {
                                     console.log(error)
@@ -875,6 +895,7 @@
                                 this.generatePaginationBtns(this.currentPageIndex);
                                 console.log("Success!!");
                                 console.log(response);
+                                vanillaToast.show('Results Updated');
                             })
                             .catch(error => {
                                 console.log(error)
@@ -983,6 +1004,7 @@
                                 this.generatePaginationBtns(this.currentPageIndex);
                                 console.log("Success!!");
                                 console.log(response);
+                                vanillaToast.show('Results Updated');
                             })
                             .catch(error => {
                                 console.log(error)
