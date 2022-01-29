@@ -195,7 +195,9 @@
                                 <h2>Meeting point</h2>
                                 <p v-html="selectedItem.meetingPoint"></p>
                                 <div class="selected-item-details__map">
-                                    <div id="map" ref="mapDiv">Map</div>
+                                    <div id="map" ref="mapDiv">
+                                        <a target="_blank" v-bind:href="'https://maps.google.com/maps?q='+ selectedItem.mapLocation.lat + ',' + selectedItem.mapLocation.lon" class="btn btn-primary btn" role="button" aria-pressed="true">Get Directions</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
