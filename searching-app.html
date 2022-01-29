@@ -94,7 +94,7 @@
 
     <div id="contentTypesContainer">
         <!-- ID for this element must match the created VUE object instance -->
-
+    
         <!-- User editable region -->
         <div class="container-fluid">
             <div class="row events-container">
@@ -110,23 +110,21 @@
                                 <li v-if="showFirstLastBtns" class="page-item">
                                     <!-- Can be set to show/hide by setting the showFirstLastBtns to true/false -->
                                     <button class="page-link" type="button" aria-label="Next" v-on:click="goToPage(1)">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </button>
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </button>
                                 </li>
-                                <li v-if="showPageBtns" v-for="pageBtn in pageBtns" class="page-item"
-                                    v-bind:class="{ active: currentPageIndex == pageBtn.pageNum - 1 }"><button
-                                        class="page-link" type="button"
-                                        v-on:click="goToPage(pageBtn.pageNum)">{{ pageBtn.pageNum }}</button></li>
+                                <li v-if="showPageBtns" v-for="pageBtn in pageBtns" class="page-item" v-bind:class="{ active: currentPageIndex == pageBtn.pageNum - 1 }"><button
+                                                class="page-link" type="button"
+                                                v-on:click="goToPage(pageBtn.pageNum)">{{ pageBtn.pageNum }}</button></li>
                                 <!-- Numbered pagination buttons. Can be hidden/shown by toggling showPageBtns to true/false -->
                                 <li v-if="showFirstLastBtns" class="page-item">
                                     <!-- Can be set to show/hide by setting the showFirstLastBtns to true/false -->
                                     <button class="page-link" type="button" aria-label="Next"
-                                        v-on:click="goToPage(pageCount)">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </button>
+                                                v-on:click="goToPage(pageCount)">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </button>
                                 </li>
-                                <li class="page-item"
-                                    v-bind:class="{ disabled: currentPageIndex+1 == pageCount || loading }">
+                                <li class="page-item" v-bind:class="{ disabled: currentPageIndex+1 == pageCount || loading }">
                                     <button class="page-link" type="button" v-on:click="nextPage">Next</button>
                                 </li>
                             </ul>
@@ -143,42 +141,37 @@
                     </div>
                     <!-- Events output -->
                     <div v-if="!showSelectedItem" v-for="item in items" class="card item-card">
-                        <img class="card-img-top"
-                            v-bind:src="'https://www.cheshireeast.gov.uk/' + item.image.asset.sys.uri">
+                        <img class="card-img-top" v-bind:src="'https://www.cheshireeast.gov.uk/' + item.image.asset.sys.uri" >
                         <div class="card-body">
                             <h2 class="card-title fs-3 mb-4">{{ item.entryTitle }}</h2>
                             <ul class="list-unstyled list-inline ms-0 ps-0">
-                                <li class="list-inline-item me-4"><strong>Start:</strong>
-                                    {{ item.dateStartEnd.from | formatDate }}</li>
-                                <li class="list-inline-item"><strong>End:</strong>
-                                    {{ item.dateStartEnd.to | formatDate }}</li>
+                                <li class="list-inline-item me-4"><strong>Start:</strong> {{ item.dateStartEnd.from | formatDate }}</li>
+                                <li class="list-inline-item"><strong>End:</strong> {{ item.dateStartEnd.to | formatDate }}</li>
                             </ul>
                             <h3 class="fs-6 fw-bold">Description</h3>
                             <p class="card-text" v-html="item.description"></p>
                             <a v-on:click="setSelectedItem(item)" role="button" class="cec-button">View Event<span
-                                    class="visually-hidden">: </span><span class="visually-hidden"
-                                    v-html="item.entryTitle"></span> </a>
+                                            class="visually-hidden">: </span><span class="visually-hidden"
+                                            v-html="item.entryTitle"></span> </a>
                         </div>
                     </div>
                 </div>
                 <!-- Selected event details -->
-
+    
                 <div v-if="showSelectedItem" class="selectedItem">
                     <a v-on:click="unSetSelectedItem" role="button" class="cec-button cec-button--back">Back to
                         results</a>
                     <h1 class="selected-item-details--title text-center">{{ selectedItem.title }}</h1>
                     <ul class="list-unstyled list-inline ms-0 ps-0 text-center">
-                        <li class="list-inline-item me-4"><strong>Start:</strong>
-                            {{ selectedItem.dateStartEnd.from | formatDate }}</li>
-                        <li class="list-inline-item"><strong>End:</strong>
-                            {{ selectedItem.dateStartEnd.to | formatDate }}</li>
+                        <li class="list-inline-item me-4"><strong>Start:</strong> {{ selectedItem.dateStartEnd.from | formatDate }}</li>
+                        <li class="list-inline-item"><strong>End:</strong> {{ selectedItem.dateStartEnd.to | formatDate }}</li>
                     </ul>
                     <div class="selected-item-details">
                         <div class="row">
                             <div class="col-12">
                                 <img class="rounded mx-auto d-block featured-img"
-                                    v-bind:src="'https://www.cheshireeast.gov.uk/' + selectedItem.image.asset.sys.uri"
-                                    v-bind:alt="selectedItem.title">
+                                            v-bind:src="'https://www.cheshireeast.gov.uk/' + selectedItem.image.asset.sys.uri"
+                                            v-bind:alt="selectedItem.title">
                                 <hr>
                             </div>
                             <div class="col-lg-6 pb-lg-5">
@@ -187,16 +180,15 @@
                                 <p><strong>Time:</strong> {{ selectedItem.dateStartEnd.from | getTimeOnlyFromDate }} -
                                     {{ selectedItem.dateStartEnd.to | getTimeOnlyFromDate }}</p>
                                 <p><strong>Leader(s):</strong> {{ selectedItem.leaders }}</p>
-                                <p><strong>Booking:</strong> <a
-                                        v-bind:href="selectedItem.eventbriteLink">{{ selectedItem.title }}</a></p>
+                                <p><strong>Booking:</strong> <a v-bind:href="selectedItem.eventbriteLink">{{ selectedItem.title }}</a></p>
                                 <p><strong>More information:</strong> <span
-                                        v-html="selectedItem.eventInformation"></span></p>
+                                                v-html="selectedItem.eventInformation"></span></p>
                                 <p><strong>Tags:</strong>
-                                    <ul>
-                                        <li v-for="tag in selectedItem.tags">
-                                            {{ tag.name }}
-                                        </li>
-                                    </ul>
+                                <ul>
+                                    <li v-for="tag in selectedItem.tags">
+                                        {{ tag.name }}
+                                    </li>
+                                </ul>
                                 </p>
                             </div>
                             <div class="col-lg-6 pb-5">
@@ -207,36 +199,36 @@
                                 </div>
                             </div>
                         </div>
-
+    
                     </div>
                 </div>
-
+    
                 <div v-if="!showSelectedItem" class="col-md-4">
                     <div class="search-options-container border-secondary border border-1 rounded p-3 bg-light">
                         <h2 class="mt-0">Search for an event</h2>
-
+    
                         <div class="date-range">
                             <h3>Date range</h3>
                             <label for="start-date">From</label>
-
+    
                             <input type="date" id="start-date" name="start-date" v-model="fromDate" min="2020-06-07"
-                                max="2025-06-14" v-on:change="searchContentType()">
+                                        max="2025-06-14" v-on:change="searchContentType()">
                             <label for="end-date">To</label>
                             <input type="date" id="end-date" name="end-date" v-model="toDate" min="2020-06-07"
-                                max="2025-06-14" v-on:change="searchContentType()">
+                                        max="2025-06-14" v-on:change="searchContentType()">
                         </div>
-
+    
                         <div class="search-options mt-3">
                             <div v-if="showSearch" class="input-group mb-3 content-type-search">
-                                <input type="text" class="form-control me-2 border-secondary border border-1"
-                                    placeholder="Type here..." v-model="searchTerm" aria-label="Recipient's username"
-                                    aria-describedby="basic-addon2" id="contentTypeSearchInput">
+                                <input type="text" class="form-control me-2 border-secondary border border-1" placeholder="Type here..."
+                                            v-model="searchTerm" aria-label="Recipient's username"
+                                            aria-describedby="basic-addon2" id="contentTypeSearchInput">
                                 <div class="input-group-append">
                                     <button type="button" class="btn btn-outline-secondary"
-                                        v-on:click="searchContentType(searchTerm)"
-                                        id="contentTypeSearchBtn">Search</button>
+                                                v-on:click="searchContentType(searchTerm)"
+                                                id="contentTypeSearchBtn">Search</button>
                                     <button class="btn btn-outline-secondary" type="button"
-                                        v-on:click="resetSearch">Clear</button>
+                                                v-on:click="resetSearch">Clear</button>
                                 </div>
                             </div>
                             <div v-if="showSearch" class="search-error-messages">
@@ -245,48 +237,44 @@
                                 </div>
                             </div>
                         </div>
-
+    
                     </div>
-
+    
                     <div class="category-options pt=5 mt-5">
                         <h3 class="mb-3">Filter all events by category</h3>
                         <div class="form-check" v-for="category in categoryOptions">
                             <input class="form-check-input" type="checkbox" name="categoryOption"
-                                v-bind:id="category.id" v-on:change="filterList(category)">
+                                            v-bind:id="category.id" v-on:change="filterList(category)">
                             <label class="form-check-label" v-bind:for="category.id">{{ category.name }}</label>
                         </div>
                     </div> <!-- End of category options -->
-
-
-
+    
+    
+    
                 </div>
             </div>
-
+    
         </div>
         <!-- End of user editable region -->
-
+    
         <!-- Bottom navigation -->
         <!-- **DO NOT EDIT** -->
         <div v-if="showPaginationBottom && !showSelectedItem" class="mt-1 mb-1">
             <nav aria-label="Results data navigation">
                 <ul class="pagination mb-0">
-                    <li class="page-item" v-bind:class="{ disabled: currentPageIndex == 0 }"><a class="page-link"
-                            v-on:click="previousPage">Previous</a></li>
+                    <li class="page-item" v-bind:class="{ disabled: currentPageIndex == 0 }"><a class="page-link" v-on:click="previousPage">Previous</a></li>
                     <li v-if="showFirstLastBtns" class="page-item">
                         <a class="page-link" href="#" aria-label="Next" v-on:click="goToPage(1)">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li v-if="showPageBtns" v-for="pageBtn in pageBtns" class="page-item"
-                        v-bind:class="{ active: currentPageIndex == pageBtn.pageNum - 1 }"><a class="page-link"
-                            v-on:click="goToPage(pageBtn.pageNum)">{{ pageBtn.pageNum }}</a></li>
+                    <li v-if="showPageBtns" v-for="pageBtn in pageBtns" class="page-item" v-bind:class="{ active: currentPageIndex == pageBtn.pageNum - 1 }"><a class="page-link" v-on:click="goToPage(pageBtn.pageNum)">{{ pageBtn.pageNum }}</a></li>
                     <li v-if="showFirstLastBtns" class="page-item">
                         <a class="page-link" href="#" aria-label="Next" v-on:click="goToPage(pageCount)">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
-                    <li class="page-item" v-bind:class="{ disabled: currentPageIndex+1 == pageCount }"><a
-                            class="page-link" v-on:click="nextPage">Next</a></li>
+                    <li class="page-item" v-bind:class="{ disabled: currentPageIndex+1 == pageCount }"><a class="page-link" v-on:click="nextPage">Next</a></li>
                 </ul>
             </nav>
             <div v-if="loading == false" class="api-results-info">
@@ -307,483 +295,596 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         (function () {
-            // your page initialization code here
-            // the DOM will be available here
-            var app = new Vue({
-                el: '#contentTypesContainer',
-                data() {
-                    // Content Type Settings
-                    // Please change the below settings when using a different content type
-                    // In most cases, the properties below will be only the settings to change here before rendering the content above, using the following syntax(example): {{ item.consultantTitle }} within the HTML.
-                    let contentType = "rangerEvents";
-                    let projectId = "website";
+                // your page initialization code here
+                // the DOM will be available here
+                var app = new Vue({
+                    el: '#contentTypesContainer',
+                    data() {
+                        // Content Type Settings
+                        // Please change the below settings when using a different content type
+                        // In most cases, the properties below will be only the settings to change here before rendering the content above, using the following syntax(example): {{ item.consultantTitle }} within the HTML.
+                        let contentType = "rangerEvents";
+                        let projectId = "website";
 
-                    // Search settings
+                        // Search settings
 
-                    return {
-                        // Content Type Settings (Continued)
-                        accessToken: 'QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I', // API access token, replace if expired
-                        linkDepth: 5, // leave at 5 if unsure.
-                        pageSize: 20, // number of results per page. Do not leave blank
+                        return {
+                            // Content Type Settings (Continued)
+                            accessToken: 'QCpZfwnsgnQsyHHB3ID5isS43cZnthj6YoSPtemxFGtcH15I', // API access token, replace if expired
+                            linkDepth: 5, // leave at 5 if unsure.
+                            pageSize: 20, // number of results per page. Do not leave blank
 
-                        // Optional settings
-                        showPageBtns: true, // If set to false, the page buttons will be hidden and instead just display the 'Previous' and 'Next' buttons
-                        showFirstLastBtns: false, // Toggle to show/hide the '<<' and '>>' buttons
+                            // Optional settings
+                            showPageBtns: true, // If set to false, the page buttons will be hidden and instead just display the 'Previous' and 'Next' buttons
+                            showFirstLastBtns: false, // Toggle to show/hide the '<<' and '>>' buttons
 
-                        showPaginationTop: true, // Toggle to show/hide the top pagination buttons
-                        showPaginationBottom: true, // Toggle to show/hide the top pagination buttons
+                            showPaginationTop: true, // Toggle to show/hide the top pagination buttons
+                            showPaginationBottom: true, // Toggle to show/hide the top pagination buttons
 
-                        showSearch: true, // Toggle to show/hide the search box
+                            showSearch: true, // Toggle to show/hide the search box
 
-                        ordering: "title", // set the field to order by. Set to id of field(e.g. "consultantTitle"). To reverse order, add '-'(e.g. "-consultantTitle").
+                            ordering: "title", // set the field to order by. Set to id of field(e.g. "consultantTitle"). To reverse order, add '-'(e.g. "-consultantTitle").
 
-                        // Advanced Settings
-                        url: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Website/contentTypes/" +
-                            contentType + "/entries/",
-                        searchUrl: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/" +
-                            projectId +
-                            "/entries/",
+                            // Advanced Settings
+                            url: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/Website/contentTypes/" +
+                                contentType + "/entries/",
+                            searchUrl: "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/" +
+                                projectId +
+                                "/entries/",
 
-                        // Add search fields to search against. 
-                        searchFields: [
-                            "title"
-                        ], // These can be found within Contensis Content Modelling(API name for the field).
+                            // Add search fields to search against. 
+                            searchFields: [
+                                "title"
+                            ], // These can be found within Contensis Content Modelling(API name for the field).
 
-                        // **DO NOT EDIT BELOW**
-                        numOfPaginationBtns: 0, // number of buttons for paginating the results. Set to 0 to show all.
-                        includePageCount: true, // set whether to request the page count parameter for the API calls.
-                        items: null, // array for the content types to be appended to. Will be used after the first API call, see 'mounted' hook below.
-                        loading: true, // used to determine when to show loading animation. Needs to be set to true initially. Do not change.
-                        errored: false,
-                        currentPageIndex: 0,
-                        totalCount: null, // container for
-                        pageCount: null, // container for total page count for API call, value used for pagination
-                        pageBtns: [], // Array for page pagination buttons
+                            // **DO NOT EDIT BELOW**
+                            numOfPaginationBtns: 0, // number of buttons for paginating the results. Set to 0 to show all.
+                            includePageCount: true, // set whether to request the page count parameter for the API calls.
+                            items: null, // array for the content types to be appended to. Will be used after the first API call, see 'mounted' hook below.
+                            loading: true, // used to determine when to show loading animation. Needs to be set to true initially. Do not change.
+                            errored: false,
+                            currentPageIndex: 0,
+                            totalCount: null, // container for
+                            pageCount: null, // container for total page count for API call, value used for pagination
+                            pageBtns: [], // Array for page pagination buttons
 
-                        contentType: contentType,
+                            contentType: contentType,
 
-                        // Search
-                        searchTerm: "",
-                        searchAlert: false, // Used to check whether to show the 'Please enter a search term alert'. Leave as false.
+                            // Search
+                            searchTerm: "",
+                            searchAlert: false, // Used to check whether to show the 'Please enter a search term alert'. Leave as false.
 
-                        // Date Range
-                        fromDate: "",
-                        toDate: "",
+                            // Date Range
+                            fromDate: "",
+                            toDate: "",
 
-                        // Category options
-                        categoryOptions: [{
-                                "id": "tagItem188",
-                                "name": "Bring a packed lunch",
-                                "key": "0/16/169/188"
-                            },
-                            // {"id": "tagItem174","name": "Bring binoculars if you have them", "key": ""},
-                            {
-                                "id": "tagItem172",
-                                "name": "Car parking charge",
-                                "key": "0/16/169/172"
-                            },
-                            {
-                                "id": "tagItem173",
-                                "name": "Children must be accompanied by an adult",
-                                "key": "0/16/169/173"
-                            },
-                            {
-                                "id": "tagItem174",
-                                "name": "Easy walking grade",
-                                "key": "0/16/169/174"
-                            },
-                            {
-                                "id": "tagItem175",
-                                "name": "Full accessibility - level or ramped access. Accessible toilets available",
-                                "key": "0/16/169/175"
-                            },
-                            {
-                                "id": "tagItem176",
-                                "name": "Healthy walk",
-                                "key": "0/16/169/176"
-                            },
-                            // {"name": "Historial walk", "key": ""}, no key
-                            // {"name": "Ideal for families and accompanied children", "key": ""}, no key
-                            {
-                                "id": "tagItem179",
-                                "name": "Moderate walking grade",
-                                "key": "0/16/169/179"
-                            },
-                            {
-                                "id": "tagItem180",
-                                "name": "Partial accessibility - level or ramped access",
-                                "key": "0/16/169/180"
-                            },
-                            // {"name": "Partnership event", "key": ""}, no key
-                            {
-                                "id": "tagItem182",
-                                "name": "Places limited - please book in advance",
-                                "key": "0/16/169/182"
-                            },
-                            {
-                                "id": "tagItem184",
-                                "name": "Please wear suitable boots and clothing",
-                                "key": "0/16/169/184"
-                            },
-                            // {"name": "Refreshment shop, opportunity for refreshments", "key": ""}, no key
-                            // {"name": "Strenuous walking grade", "key": ""}, no key
-                            {
-                                "id": "tagItem187",
-                                "name": "There is a charge for this event",
-                                "key": "0/16/169/187"
-                            },
-                            {
-                                "id": "tagItem188",
-                                "name": "Wildlife walk",
-                                "key": "0/16/169/188"
-                            },
-                            {
-                                "id": "tagItem183",
-                                "name": "Please leave your dog at home",
-                                "key": "0/16/169/183"
-                            },
-
-                        ],
-                        selectedCategoryOptions: [],
-
-                        selectedItem: null,
-                        showSelectedItem: false
-                    }
-                },
-                filters: {
-                    currencydecimal(value) {
-                        return value.toFixed(2)
-                    },
-                    formatDate(value) {
-                        const monthNames = ["January", "February", "March", "April", "May", "June",
-                            "July", "August", "September", "October", "November", "December"
-                        ];
-
-                        let date = new Date(value);
-
-                        const day = date.getDate();
-                        const month = monthNames[date.getMonth()];
-                        const year = date.getFullYear();
-
-                        return (day + " " + month + " " + year)
-                    },
-                    truncate(string) {
-                        // limit to character length
-                        return string
-                    },
-                    getTimeOnlyFromDate(date) {
-                        const d = new Date(date);
-                        const hours = d.getHours();
-                        const minutes = d.getMinutes();
-                        return hours.toString() + ":" + (minutes < 10 ? '0' : '') + minutes.toString();
-                    }
-                },
-                methods: {
-                    getPlainUrl: function () {
-                        return this.url;
-                    },
-                    getSearchUrl: function () {
-                        return this.searchUrl;
-                    },
-                    getBaseUrl: function () {
-                        var url = this.url
-                        // Add access token to URL
-                        url = url + '?accessToken=' + this.accessToken;
-                        // Add link depth to URL
-                        url = url + '&linkDepth=' + this.linkDepth;
-                        // Add page size to URL
-                        url = url + '&pageSize=' + this.pageSize;
-
-                        url = url + '&order=' + this.ordering;
-                        // Add page count to URL
-                        if (this.includePageCount) {
-                            url = url + '&totalCount';
-                        }
-                        url = url + '&pageCount';
-                        console.log(url);
-
-                        return url;
-                    },
-                    previousPage: function () {
-                        if (this.currentPageIndex > 0) {
-                            this.loading = true;
-                            var prevPageUrl = this.getBaseUrl() + '&pageIndex=' + (this
-                                .currentPageIndex - 1);
-                            axios
-                                .get(
-                                    prevPageUrl
-                                )
-                                .then(response => {
-                                    this.items = response.data.items;
-                                    this.loading = false;
-                                    console.log("Success!!");
-                                    this.currentPageIndex = this.currentPageIndex - 1;
-                                    this.generatePaginationBtns(this.currentPageIndex);
-                                    this.loading = false;
-                                    vanillaToast.show('Results Updated');
-                                })
-                                .catch(error => {
-                                    console.log(error)
-                                    this.errored = true
-                                })
-                                .finally(() => this.loading = false)
-                        }
-                    },
-                    nextPage: function () {
-                        // Check if next page exceeds page count
-                        if (this.currentPageIndex + 1 < this.pageCount) {
-                            // Set loading
-                            this.loading = true;
-                            // API call with pageIndex parameter
-                            var nextPageUrl = this.getBaseUrl() + '&pageIndex=' + (this
-                                .currentPageIndex + 1);
-
-                            axios
-                                .get(
-                                    nextPageUrl
-                                )
-                                .then(response => {
-                                    this.items = response.data.items;
-                                    this.loading = false;
-
-                                    console.log("Success!!");
-                                    this.currentPageIndex = this.currentPageIndex + 1;
-                                    this.generatePaginationBtns(this.currentPageIndex);
-                                    this.loading = false;
-                                    vanillaToast.show('Results Updated');
-                                })
-                                .catch(error => {
-                                    console.log(error)
-                                    this.errored = true
-                                })
-                                .finally(() => this.loading = false)
-
-                            console.log("Next page button...");
-                        }
-
-                    },
-                    goToPage: function (pageNum) {
-                        this.loading = true;
-                        var goToPageUrl = this.getBaseUrl() + '&pageIndex=' + (pageNum - 1);
-
-                        axios
-                            .get(
-                                goToPageUrl
-                            )
-                            .then(response => {
-                                this.items = response.data.items;
-                                this.loading = false;
-                                this.totalCount = response.data.totalCount;
-                                this.pageCount = response.data.pageCount;
-                                console.log("Success!!");
-                                this.currentPageIndex = pageNum - 1;
-                                this.generatePaginationBtns(this.currentPageIndex);
-                                this.loading = false;
-                                vanillaToast.show('Results Updated');
-                            })
-                            .catch(error => {
-                                console.log(error)
-                                this.errored = true
-                            })
-                            .finally(() => this.loading = false)
-                    },
-                    generatePaginationBtns: function (currentPage) {
-                        // Reset pageBtns array, before refreshing the buttons to show.
-                        // This is required as a new list of buttons will be generated 
-                        this.pageBtns = [];
-                        // get current page
-                        var currentPageValue = currentPage;
-                        for (let index = 0; index < this.pageCount; index++) {
-                            this.pageBtns.push({
-                                pageNum: index + 1
-                            });
-                        }
-                    },
-                    searchContentType: function (searchTermValue) {
-                        if (searchTermValue != undefined) {
-                            this.searchTerm = searchTermValue;
-                        }
-
-                        if (this.fromDate != "") {
-
-                            let fieldsToSearch = this.searchFields;
-
-                            let arrayOfFields = this.searchFields;
-
-                            // Array to add to query
-                            let orArray = [];
-
-                            arrayOfFields.forEach(element => {
-                                console.log(element);
-                                let objectToAppend = new Object({
-                                    "field": element,
-                                    "contains": searchTermValue
-                                });
-                                orArray.push(objectToAppend);
-                            });
-                            console.log(this.fromDate);
-                            console.log(orArray);
-                            console.log(decodeURIComponent(
-                                "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22or%22%3A%5B%7B%22field%22%3A%22entryTitle%22%2C%22freeText%22%3A%22Marie%22%2C%22weight%22%3A30%7D%2C%7B%22field%22%3A%22entryDescription%22%2C%22freeText%22%3A%22Marie%22%2C%22weight%22%3A20%7D%5D%7D%2C%7B%22or%22%3A%5B%7B%22field%22%3A%22dateStartEnd.from%22%2C%22greaterThanOrEqualTo%22%3A%222019-12-30T00%3A00%3A00.000Z%22%7D%2C%7B%22field%22%3A%22dateStartEnd.to%22%2C%22greaterThanOrEqualTo%22%3A%222019-12-30T00%3A00%3A00.000Z%22%7D%5D%7D%5D"
-                            ));
-
-                            console.log("From date: " + typeof (this.fromDate));
-                            console.log(new Date((this.fromDate)).toISOString());
-                            console.log(new Date((this.toDate)).toISOString());
-
-                            console.log(searchTermValue);
-
-
-                            let query;
-                            // If search term and date are selected, use this query
-                            if (this.searchTerm != "" && this.fromDate != "" && this.toDate != "") {
-                                console.log("Search and date query...");
-                                query = [{
-                                    "field": "sys.versionStatus",
-                                    "equalTo": "latest"
-                                }, {
-                                    "field": "sys.contentTypeId",
-                                    "equalTo": "rangerEvents"
-                                }, {
-                                    "or": [{
-                                        "field": "entryTitle",
-                                        "freeText": this.searchTerm,
-                                        "weight": 30
-                                    }, {
-                                        "field": "entryDescription",
-                                        "freeText": this.searchTerm,
-                                        "weight": 20
-                                    }]
-                                }, {
-                                    "and": [{
-                                        "field": "dateStartEnd.from",
-                                        "greaterThanOrEqualTo": new Date((this
-                                            .fromDate)).toISOString()
-                                    }, {
-                                        "field": "dateStartEnd.to",
-                                        "lessThanOrEqualTo": new Date((this
-                                            .toDate)).toISOString()
-                                    }]
-                                }]
-                            } else {
-                                // query without search term
-                                console.log("Date query only...");
-                                console.log(this.fromDate);
-                                console.log(this.toDate);
-
-                                var queryFromDate = new Date((this.fromDate));
-                                queryFromDate.setDate((queryFromDate.getDate()) + parseInt(10));
-                                queryFromDate.toISOString();
-                                console.log(queryFromDate);
-
-                                var queryToDate = new Date((this.toDate));
-                                queryToDate.setDate((queryToDate.getDate()) + parseInt(1));
-                                queryToDate.toISOString();
-                                console.log(queryToDate);
-
-                                query = [{
-                                    "field": "sys.versionStatus",
-                                    "equalTo": "latest"
-                                }, {
-                                    "field": "sys.contentTypeId",
-                                    "equalTo": "rangerEvents"
-                                }, {
-                                    "and": [{
-                                        "field": "dateStartEnd.from",
-                                        "greaterThanOrEqualTo": new Date((this
-                                            .fromDate)).toISOString()
-                                    }, {
-                                        "field": "dateStartEnd.to",
-                                        "lessThanOrEqualTo": queryToDate
-                                    }]
-                                }]
-                            }
-
-
-                            console.log(query);
-
-                            uri = JSON.stringify(query);
-
-                            const encoded = encodeURIComponent(uri);
-                            console.log("Encoded component...");
-                            console.log(encoded);
-
-                            // Axios
-                            axios
-                                .get(
-                                    (this.getSearchUrl()) + "search?where=" + encoded, {
-                                        params: {
-                                            contentTypeId: this.contentType,
-                                            accessToken: this.accessToken,
-                                            pageSize: this.pageSize,
-                                            pageIndex: 0,
-                                            linkDepth: 5,
-                                            order: this.ordering
-
-                                        }
-                                    }
-                                )
-                                .then(response => {
-                                    this.items = response.data.items;
-                                    this.loading = false;
-                                    this.totalCount = response.data.totalCount;
-                                    this.pageCount = response.data.pageCount;
-                                    this.generatePaginationBtns(this.currentPageIndex);
-                                    console.log("Success!!");
-                                    console.log(response);
-                                    vanillaToast.show('Results Updated');
-                                })
-                                .catch(error => {
-                                    console.log(error)
-                                    this.errored = true
-                                })
-                                .finally(() => this.loading = false)
-
-                        } else {
-                            if (searchTermValue === "") {
-                                this.searchAlert = true;
-                                return null
-                            } else {
-                                this.loading = true;
-                                this.searchAlert = false;
-                            }
-
-                            let fieldsToSearch = this.searchFields;
-
-                            let arrayOfFields = this.searchFields;
-
-                            // Array to add to query
-                            let orArray = [];
-
-                            arrayOfFields.forEach(element => {
-                                console.log(element);
-                                let objectToAppend = new Object({
-                                    "field": element,
-                                    "contains": searchTermValue
-                                });
-                                orArray.push(objectToAppend);
-                            });
-
-                            console.log(orArray);
-
-                            let query = [{
-                                    "or": orArray
+                            // Category options
+                            categoryOptions: [{
+                                    "id": "tagItem188",
+                                    "name": "Bring a packed lunch",
+                                    "key": "0/16/169/188"
+                                },
+                                // {"id": "tagItem174","name": "Bring binoculars if you have them", "key": ""},
+                                {
+                                    "id": "tagItem172",
+                                    "name": "Car parking charge",
+                                    "key": "0/16/169/172"
                                 },
                                 {
-                                    "field": "sys.versionStatus",
-                                    "equalTo": "published"
+                                    "id": "tagItem173",
+                                    "name": "Children must be accompanied by an adult",
+                                    "key": "0/16/169/173"
                                 },
                                 {
-                                    "field": "sys.contentTypeId",
-                                    "equalTo": "rangerEvents"
-                                }
+                                    "id": "tagItem174",
+                                    "name": "Easy walking grade",
+                                    "key": "0/16/169/174"
+                                },
+                                {
+                                    "id": "tagItem175",
+                                    "name": "Full accessibility - level or ramped access. Accessible toilets available",
+                                    "key": "0/16/169/175"
+                                },
+                                {
+                                    "id": "tagItem176",
+                                    "name": "Healthy walk",
+                                    "key": "0/16/169/176"
+                                },
+                                // {"name": "Historial walk", "key": ""}, no key
+                                // {"name": "Ideal for families and accompanied children", "key": ""}, no key
+                                {
+                                    "id": "tagItem179",
+                                    "name": "Moderate walking grade",
+                                    "key": "0/16/169/179"
+                                },
+                                {
+                                    "id": "tagItem180",
+                                    "name": "Partial accessibility - level or ramped access",
+                                    "key": "0/16/169/180"
+                                },
+                                // {"name": "Partnership event", "key": ""}, no key
+                                {
+                                    "id": "tagItem182",
+                                    "name": "Places limited - please book in advance",
+                                    "key": "0/16/169/182"
+                                },
+                                {
+                                    "id": "tagItem184",
+                                    "name": "Please wear suitable boots and clothing",
+                                    "key": "0/16/169/184"
+                                },
+                                // {"name": "Refreshment shop, opportunity for refreshments", "key": ""}, no key
+                                // {"name": "Strenuous walking grade", "key": ""}, no key
+                                {
+                                    "id": "tagItem187",
+                                    "name": "There is a charge for this event",
+                                    "key": "0/16/169/187"
+                                },
+                                {
+                                    "id": "tagItem188",
+                                    "name": "Wildlife walk",
+                                    "key": "0/16/169/188"
+                                },
+                                {
+                                    "id": "tagItem183",
+                                    "name": "Please leave your dog at home",
+                                    "key": "0/16/169/183"
+                                },
+
+                            ],
+                            selectedCategoryOptions: [],
+
+                            selectedItem: null,
+                            showSelectedItem: false
+                        }
+                    },
+                    filters: {
+                        currencydecimal(value) {
+                            return value.toFixed(2)
+                        },
+                        formatDate(value) {
+                            const monthNames = ["January", "February", "March", "April", "May", "June",
+                                "July", "August", "September", "October", "November", "December"
                             ];
 
+                            let date = new Date(value);
+
+                            const day = date.getDate();
+                            const month = monthNames[date.getMonth()];
+                            const year = date.getFullYear();
+
+                            return (day + " " + month + " " + year)
+                        },
+                        truncate(string) {
+                            // limit to character length
+                            return string
+                        },
+                        getTimeOnlyFromDate(date) {
+                            const d = new Date(date);
+                            const hours = d.getHours();
+                            const minutes = d.getMinutes();
+                            return hours.toString() + ":" + (minutes < 10 ? '0' : '') + minutes.toString();
+                        }
+                    },
+                    methods: {
+                        getPlainUrl: function () {
+                            return this.url;
+                        },
+                        getSearchUrl: function () {
+                            return this.searchUrl;
+                        },
+                        getBaseUrl: function () {
+                            var url = this.url
+                            // Add access token to URL
+                            url = url + '?accessToken=' + this.accessToken;
+                            // Add link depth to URL
+                            url = url + '&linkDepth=' + this.linkDepth;
+                            // Add page size to URL
+                            url = url + '&pageSize=' + this.pageSize;
+
+                            url = url + '&order=' + this.ordering;
+                            // Add page count to URL
+                            if (this.includePageCount) {
+                                url = url + '&totalCount';
+                            }
+                            url = url + '&pageCount';
+                            console.log(url);
+
+                            return url;
+                        },
+                        previousPage: function () {
+                            if (this.currentPageIndex > 0) {
+                                this.loading = true;
+                                var prevPageUrl = this.getBaseUrl() + '&pageIndex=' + (this
+                                    .currentPageIndex - 1);
+                                axios
+                                    .get(
+                                        prevPageUrl
+                                    )
+                                    .then(response => {
+                                        this.items = response.data.items;
+                                        this.loading = false;
+                                        console.log("Success!!");
+                                        this.currentPageIndex = this.currentPageIndex - 1;
+                                        this.generatePaginationBtns(this.currentPageIndex);
+                                        this.loading = false;
+                                        vanillaToast.show('Results Updated');
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                        this.errored = true
+                                    })
+                                    .finally(() => this.loading = false)
+                            }
+                        },
+                        nextPage: function () {
+                            // Check if next page exceeds page count
+                            if (this.currentPageIndex + 1 < this.pageCount) {
+                                // Set loading
+                                this.loading = true;
+                                // API call with pageIndex parameter
+                                var nextPageUrl = this.getBaseUrl() + '&pageIndex=' + (this
+                                    .currentPageIndex + 1);
+
+                                axios
+                                    .get(
+                                        nextPageUrl
+                                    )
+                                    .then(response => {
+                                        this.items = response.data.items;
+                                        this.loading = false;
+
+                                        console.log("Success!!");
+                                        this.currentPageIndex = this.currentPageIndex + 1;
+                                        this.generatePaginationBtns(this.currentPageIndex);
+                                        this.loading = false;
+                                        vanillaToast.show('Results Updated');
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                        this.errored = true
+                                    })
+                                    .finally(() => this.loading = false)
+
+                                console.log("Next page button...");
+                            }
+
+                        },
+                        goToPage: function (pageNum) {
+                            this.loading = true;
+                            var goToPageUrl = this.getBaseUrl() + '&pageIndex=' + (pageNum - 1);
+
+                            axios
+                                .get(
+                                    goToPageUrl
+                                )
+                                .then(response => {
+                                    this.items = response.data.items;
+                                    this.loading = false;
+                                    this.totalCount = response.data.totalCount;
+                                    this.pageCount = response.data.pageCount;
+                                    console.log("Success!!");
+                                    this.currentPageIndex = pageNum - 1;
+                                    this.generatePaginationBtns(this.currentPageIndex);
+                                    this.loading = false;
+                                    vanillaToast.show('Results Updated');
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                    this.errored = true
+                                })
+                                .finally(() => this.loading = false)
+                        },
+                        generatePaginationBtns: function (currentPage) {
+                            // Reset pageBtns array, before refreshing the buttons to show.
+                            // This is required as a new list of buttons will be generated 
+                            this.pageBtns = [];
+                            // get current page
+                            var currentPageValue = currentPage;
+                            for (let index = 0; index < this.pageCount; index++) {
+                                this.pageBtns.push({
+                                    pageNum: index + 1
+                                });
+                            }
+                        },
+                        searchContentType: function (searchTermValue) {
+                            if (searchTermValue != undefined) {
+                                this.searchTerm = searchTermValue;
+                            }
+
+                            if (this.fromDate != "") {
+
+                                let fieldsToSearch = this.searchFields;
+
+                                let arrayOfFields = this.searchFields;
+
+                                // Array to add to query
+                                let orArray = [];
+
+                                arrayOfFields.forEach(element => {
+                                    console.log(element);
+                                    let objectToAppend = new Object({
+                                        "field": element,
+                                        "contains": searchTermValue
+                                    });
+                                    orArray.push(objectToAppend);
+                                });
+                                console.log(this.fromDate);
+                                console.log(orArray);
+                                console.log(decodeURIComponent(
+                                    "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22or%22%3A%5B%7B%22field%22%3A%22entryTitle%22%2C%22freeText%22%3A%22Marie%22%2C%22weight%22%3A30%7D%2C%7B%22field%22%3A%22entryDescription%22%2C%22freeText%22%3A%22Marie%22%2C%22weight%22%3A20%7D%5D%7D%2C%7B%22or%22%3A%5B%7B%22field%22%3A%22dateStartEnd.from%22%2C%22greaterThanOrEqualTo%22%3A%222019-12-30T00%3A00%3A00.000Z%22%7D%2C%7B%22field%22%3A%22dateStartEnd.to%22%2C%22greaterThanOrEqualTo%22%3A%222019-12-30T00%3A00%3A00.000Z%22%7D%5D%7D%5D"
+                                ));
+
+                                console.log("From date: " + typeof (this.fromDate));
+                                console.log(new Date((this.fromDate)).toISOString());
+                                console.log(new Date((this.toDate)).toISOString());
+
+                                console.log(searchTermValue);
+
+
+                                let query;
+                                // If search term and date are selected, use this query
+                                if (this.searchTerm != "" && this.fromDate != "" && this.toDate != "") {
+                                    console.log("Search and date query...");
+                                    query = [{
+                                        "field": "sys.versionStatus",
+                                        "equalTo": "latest"
+                                    }, {
+                                        "field": "sys.contentTypeId",
+                                        "equalTo": "rangerEvents"
+                                    }, {
+                                        "or": [{
+                                            "field": "entryTitle",
+                                            "freeText": this.searchTerm,
+                                            "weight": 30
+                                        }, {
+                                            "field": "entryDescription",
+                                            "freeText": this.searchTerm,
+                                            "weight": 20
+                                        }]
+                                    }, {
+                                        "and": [{
+                                            "field": "dateStartEnd.from",
+                                            "greaterThanOrEqualTo": new Date((this
+                                                .fromDate)).toISOString()
+                                        }, {
+                                            "field": "dateStartEnd.to",
+                                            "lessThanOrEqualTo": new Date((this
+                                                .toDate)).toISOString()
+                                        }]
+                                    }]
+                                } else {
+                                    // query without search term
+                                    console.log("Date query only...");
+                                    console.log(this.fromDate);
+                                    console.log(this.toDate);
+                                    
+                                    var queryFromDate = new Date((this.fromDate));
+                                    queryFromDate.setDate((queryFromDate.getDate()) + parseInt(10));
+                                    queryFromDate.toISOString();
+                                    console.log(queryFromDate);
+
+                                    var queryToDate = new Date((this.toDate));
+                                    queryToDate.setDate((queryToDate.getDate()) + parseInt(1));
+                                    queryToDate.toISOString();
+                                    console.log(queryToDate);
+
+                                    query = [{
+                                        "field": "sys.versionStatus",
+                                        "equalTo": "latest"
+                                    }, {
+                                        "field": "sys.contentTypeId",
+                                        "equalTo": "rangerEvents"
+                                    }, {
+                                        "and": [{
+                                            "field": "dateStartEnd.from",
+                                            "greaterThanOrEqualTo": new Date((this
+                                                .fromDate)).toISOString()
+                                        }, {
+                                            "field": "dateStartEnd.to",
+                                            "lessThanOrEqualTo": queryToDate
+                                        }]
+                                    }]
+                                }
+
+
+                                console.log(query);
+
+                                uri = JSON.stringify(query);
+
+                                const encoded = encodeURIComponent(uri);
+                                console.log("Encoded component...");
+                                console.log(encoded);
+
+                                // Axios
+                                axios
+                                    .get(
+                                        (this.getSearchUrl()) + "search?where=" + encoded, {
+                                            params: {
+                                                contentTypeId: this.contentType,
+                                                accessToken: this.accessToken,
+                                                pageSize: this.pageSize,
+                                                pageIndex: 0,
+                                                linkDepth: 5,
+                                                order: this.ordering
+
+                                            }
+                                        }
+                                    )
+                                    .then(response => {
+                                        this.items = response.data.items;
+                                        this.loading = false;
+                                        this.totalCount = response.data.totalCount;
+                                        this.pageCount = response.data.pageCount;
+                                        this.generatePaginationBtns(this.currentPageIndex);
+                                        console.log("Success!!");
+                                        console.log(response);
+                                        vanillaToast.show('Results Updated');
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                        this.errored = true
+                                    })
+                                    .finally(() => this.loading = false)
+
+                            } else {
+                                if (searchTermValue === "") {
+                                    this.searchAlert = true;
+                                    return null
+                                } else {
+                                    this.loading = true;
+                                    this.searchAlert = false;
+                                }
+
+                                let fieldsToSearch = this.searchFields;
+
+                                let arrayOfFields = this.searchFields;
+
+                                // Array to add to query
+                                let orArray = [];
+
+                                arrayOfFields.forEach(element => {
+                                    console.log(element);
+                                    let objectToAppend = new Object({
+                                        "field": element,
+                                        "contains": searchTermValue
+                                    });
+                                    orArray.push(objectToAppend);
+                                });
+
+                                console.log(orArray);
+
+                                let query = [{
+                                        "or": orArray
+                                    },
+                                    {
+                                        "field": "sys.versionStatus",
+                                        "equalTo": "published"
+                                    },
+                                    {
+                                        "field": "sys.contentTypeId",
+                                        "equalTo": "rangerEvents"
+                                    }
+                                ];
+
+                                uri = JSON.stringify(query);
+
+                                const encoded = encodeURIComponent(uri);
+                                console.log("Encoded component...");
+                                console.log(encoded);
+
+                                // Axios
+                                axios
+                                    .get(
+                                        (this.getSearchUrl()) + "search?where=" + encoded, {
+                                            params: {
+                                                contentTypeId: this.contentType,
+                                                accessToken: this.accessToken,
+                                                pageSize: this.pageSize,
+                                                pageIndex: 0,
+                                                linkDepth: 5,
+                                                order: this.ordering
+
+                                            }
+                                        }
+                                    )
+                                    .then(response => {
+                                        this.items = response.data.items;
+                                        this.loading = false;
+                                        this.totalCount = response.data.totalCount;
+                                        this.pageCount = response.data.pageCount;
+                                        this.generatePaginationBtns(this.currentPageIndex);
+                                        console.log("Success!!");
+                                        console.log(response);
+                                        vanillaToast.show('Results Updated');
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                        this.errored = true
+                                    })
+                                    .finally(() => this.loading = false)
+                            }
+
+                        },
+                        resetSearch: function () {
+                            this.searchTerm = "";
+                            this.fromDate = "";
+                            this.toDate = "";
+                            axios
+                                .get(
+                                    this.getBaseUrl()
+                                )
+                                .then(response => {
+                                    this.items = response.data.items;
+                                    this.loading = false;
+                                    this.totalCount = response.data.totalCount;
+                                    this.pageCount = response.data.pageCount;
+                                    this.generatePaginationBtns(this.currentPageIndex);
+                                    console.log("Success!!");
+                                    console.log(response);
+                                    vanillaToast.show('Results Updated');
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                    this.errored = true
+                                })
+                                .finally(() => this.loading = false)
+                        },
+                        filterList: function (category) {
+                            // Update list on filter change(e.g. checkbox, date picker change)
+                            if (document.getElementById(category.id).checked == true) {
+                                console.log(category + ": is true.");
+                                this.selectedCategoryOptions.push(category);
+                            } else if (document.getElementById(category.id).checked == false) {
+                                let indexOfCat = this.selectedCategoryOptions.indexOf(category);
+                                this.selectedCategoryOptions.splice(indexOfCat, 1);
+                            }
+                            this.selectedCategoryOptions = [...new Set(this.selectedCategoryOptions)];
+                            console.log(this.selectedCategoryOptions);
+                            console.log("");
+                        
+                            // Selected categories, added to query
+
+                            var selectedCategoryOptionsQueryItems = [];
+
+                            this.selectedCategoryOptions.forEach(element => {
+                                console.log(element);
+                                let objectToAppend = new Object({
+                                    "field": "tags",
+                                    "in": element.key
+                                });
+                                selectedCategoryOptionsQueryItems.push(objectToAppend);
+                            });
+
+                            console.log("Selected Category Items...");
+                            console.log(selectedCategoryOptionsQueryItems);
+
+
+                            let query = [{
+                                    "field": "sys.versionStatus",
+                                    "equalTo": "latest"
+                                }, {
+                                    "field": "sys.contentTypeId",
+                                    "equalTo": "rangerEvents"
+                                },
+                                {
+                                    "and": selectedCategoryOptionsQueryItems
+                                }
+
+                            ];
+
+                            const thing =
+                                "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22field%22%3A%22tags%22%2C%22in%22%3A%5B%220%2F16%2F169%2F176%22%5D%7D%5D";
+
+                            //console.log(decodeURIComponent("https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22or%22%3A%5B%7B%22and%22%3A%5B%7B%22field%22%3A%22dateStartEnd.from%22%2C%22greaterThanOrEqualTo%22%3A%222020-05-30T23%3A00%3A00.000Z%22%7D%2C%7B%22field%22%3A%22dateStartEnd.from%22%2C%22lessThanOrEqualTo%22%3A%222021-09-26T23%3A00%3A00.000Z%22%7D%5D%7D%2C%7B%22and%22%3A%5B%7B%22field%22%3A%22dateStartEnd.to%22%2C%22greaterThanOrEqualTo%22%3A%222020-05-30T23%3A00%3A00.000Z%22%7D%2C%7B%22field%22%3A%22dateStartEnd.to%22%2C%22lessThanOrEqualTo%22%3A%222021-09-26T23%3A00%3A00.000Z%22%7D%5D%7D%5D%7D%5D"));
+
                             uri = JSON.stringify(query);
 
                             const encoded = encodeURIComponent(uri);
                             console.log("Encoded component...");
                             console.log(encoded);
+
+                            console.log(this.getSearchUrl() + "search?where=" + uri);
 
                             // Axios
                             axios
@@ -796,7 +897,6 @@
                                             pageIndex: 0,
                                             linkDepth: 5,
                                             order: this.ordering
-
                                         }
                                     }
                                 )
@@ -815,209 +915,83 @@
                                     this.errored = true
                                 })
                                 .finally(() => this.loading = false)
-                        }
+                        },
+                        setSelectedItem: function (item) {
+                            // 
+                            this.selectedItem = item;
+                            this.showSelectedItem = true;
+                            console.log(this.selectedItem);
+                            this.initGoogleMap(item);
+                        },
+                        unSetSelectedItem: function () {
+                            this.selectedItem = null;
+                            this.showSelectedItem = false;
+                            this.selectedCategoryOptions = [];
+                        },
 
-                    },
-                    resetSearch: function () {
-                        this.searchTerm = "";
-                        this.fromDate = "";
-                        this.toDate = "";
-                        axios
-                            .get(
-                                this.getBaseUrl()
-                            )
-                            .then(response => {
-                                this.items = response.data.items;
-                                this.loading = false;
-                                this.totalCount = response.data.totalCount;
-                                this.pageCount = response.data.pageCount;
-                                this.generatePaginationBtns(this.currentPageIndex);
-                                console.log("Success!!");
-                                console.log(response);
-                                vanillaToast.show('Results Updated');
-                            })
-                            .catch(error => {
-                                console.log(error)
-                                this.errored = true
-                            })
-                            .finally(() => this.loading = false)
-                    },
-                    filterList: function (category) {
-                        // Update list on filter change(e.g. checkbox, date picker change)
-                        if (document.getElementById(category.id).checked == true) {
-                            console.log(category + ": is true.");
-                            this.selectedCategoryOptions.push(category);
-                        } else if (document.getElementById(category.id).checked == false) {
-                            let indexOfCat = this.selectedCategoryOptions.indexOf(category);
-                            this.selectedCategoryOptions.splice(indexOfCat, 1);
-                        }
-                        this.selectedCategoryOptions = [...new Set(this.selectedCategoryOptions)];
-                        console.log(this.selectedCategoryOptions);
-                        console.log("");
+                        generateCategoryOptions: function () {
+                            // todo
+                        },
+                        filterFromDates: function () {
+                            console.log("ready to filter from dates...");
+                            console.log(this.fromDate);
+                            console.log(this.toDate);
+                        },
+                        initGoogleMap: function (item) {
+                            // For event instance, generate map
+                            // TODO
+                            // The location of Uluru
+                            console.log("Example Google Maps");
+                            const uluru = {
+                                lat: -25.344,
+                                lng: 131.036
+                            };
+                            // The map, centered at Uluru
+                            let mapDivRef = this.$refs["mapDiv"];
+                            console.log(mapDivRef);
+                            //console.log(document.getElementById("map"));
 
-                        // Selected categories, added to query
-
-                        var selectedCategoryOptionsQueryItems = [];
-
-                        this.selectedCategoryOptions.forEach(element => {
-                            console.log(element);
-                            let objectToAppend = new Object({
-                                "field": "tags",
-                                "in": element.key
+                            /* const map = new google.maps.Map(mapDivRef, {
+                                zoom: 4,
+                                center: uluru,
                             });
-                            selectedCategoryOptionsQueryItems.push(objectToAppend);
-                        });
-
-                        console.log("Selected Category Items...");
-                        console.log(selectedCategoryOptionsQueryItems);
-
-
-                        let query = [{
-                                "field": "sys.versionStatus",
-                                "equalTo": "latest"
-                            }, {
-                                "field": "sys.contentTypeId",
-                                "equalTo": "rangerEvents"
-                            },
-                            {
-                                "and": selectedCategoryOptionsQueryItems
-                            }
-
-                        ];
-
-                        const thing =
-                            "https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22field%22%3A%22tags%22%2C%22in%22%3A%5B%220%2F16%2F169%2F176%22%5D%7D%5D";
-
-                        //console.log(decodeURIComponent("https://cms-chesheast.cloud.contensis.com/api/delivery/projects/website/entries/search?linkDepth=1&pageIndex=0&pageSize=10&where=%5B%7B%22field%22%3A%22sys.versionStatus%22%2C%22equalTo%22%3A%22latest%22%7D%2C%7B%22field%22%3A%22sys.contentTypeId%22%2C%22equalTo%22%3A%22rangerEvents%22%7D%2C%7B%22or%22%3A%5B%7B%22and%22%3A%5B%7B%22field%22%3A%22dateStartEnd.from%22%2C%22greaterThanOrEqualTo%22%3A%222020-05-30T23%3A00%3A00.000Z%22%7D%2C%7B%22field%22%3A%22dateStartEnd.from%22%2C%22lessThanOrEqualTo%22%3A%222021-09-26T23%3A00%3A00.000Z%22%7D%5D%7D%2C%7B%22and%22%3A%5B%7B%22field%22%3A%22dateStartEnd.to%22%2C%22greaterThanOrEqualTo%22%3A%222020-05-30T23%3A00%3A00.000Z%22%7D%2C%7B%22field%22%3A%22dateStartEnd.to%22%2C%22lessThanOrEqualTo%22%3A%222021-09-26T23%3A00%3A00.000Z%22%7D%5D%7D%5D%7D%5D"));
-
-                        uri = JSON.stringify(query);
-
-                        const encoded = encodeURIComponent(uri);
-                        console.log("Encoded component...");
-                        console.log(encoded);
-
-                        console.log(this.getSearchUrl() + "search?where=" + uri);
-
-                        // Axios
-                        axios
-                            .get(
-                                (this.getSearchUrl()) + "search?where=" + encoded, {
-                                    params: {
-                                        contentTypeId: this.contentType,
-                                        accessToken: this.accessToken,
-                                        pageSize: this.pageSize,
-                                        pageIndex: 0,
-                                        linkDepth: 5,
-                                        order: this.ordering
+                            // The marker, positioned at Uluru
+                            const marker = new google.maps.Marker({
+                                position: uluru,
+                                map: map,
+                            }); */
+                        }
+                    },
+                    mounted() {
+                        // Add enter key event listener for 'Enter' key search
+                        if (this.showSearch) {
+                            document.getElementById("contentTypeSearchInput")
+                                .addEventListener("keyup", function (event) {
+                                    event.preventDefault();
+                                    if (event.keyCode === 13) {
+                                        document.getElementById("contentTypeSearchBtn").click();
+                                    }
+                                });
+                            window.addEventListener('keydown', function (e) {
+                                if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e
+                                    .keyCode ==
+                                    13) {
+                                    if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
+                                        e.preventDefault();
+                                        return false;
                                     }
                                 }
-                            )
-                            .then(response => {
-                                this.items = response.data.items;
-                                this.loading = false;
-                                this.totalCount = response.data.totalCount;
-                                this.pageCount = response.data.pageCount;
-                                this.generatePaginationBtns(this.currentPageIndex);
-                                console.log("Success!!");
-                                console.log(response);
-                                vanillaToast.show('Results Updated');
-                            })
-                            .catch(error => {
-                                console.log(error)
-                                this.errored = true
-                            })
-                            .finally(() => this.loading = false)
-                    },
-                    setSelectedItem: function (item) {
-                        // 
-                        this.selectedItem = item;
-                        this.showSelectedItem = true;
-                        console.log(this.selectedItem);
-                        this.initGoogleMap(item);
-                    },
-                    unSetSelectedItem: function () {
-                        this.selectedItem = null;
-                        this.showSelectedItem = false;
-                        this.selectedCategoryOptions = [];
-                    },
+                            }, true);
+                        }
+                        this.resetSearch();
+                        this.generateCategoryOptions();
+                        // Add category buttons
 
-                    generateCategoryOptions: function () {
-                        // todo
-                    },
-                    filterFromDates: function () {
-                        console.log("ready to filter from dates...");
-                        console.log(this.fromDate);
-                        console.log(this.toDate);
-                    },
-                    gmapsInit: function () {
-                        const apiKey = 'AIzaSyA5NSJm6XLr_DPRcSrlVhCODcS8Tusi5Ec';
-                        const callbackName = 'gmapsCallback';
-
-                        const script = document.createElement('script');
-                        script.async = true;
-                        script.defer = true;
-                        script.src =
-                            `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=${callbackName}`;
-                        document.querySelector('head').appendChild(script);
-                    },
-                    initGoogleMap: function (item) {
-                        // For event instance, generate map
-                        // TODO
-                        // The location of Uluru
-                        console.log("Example Google Maps");
-                        const uluru = {
-                            lat: -25.344,
-                            lng: 131.036
-                        };
-                        // The map, centered at Uluru
-                        let mapDivRef = this.$refs["mapDiv"];
-                        console.log(mapDivRef);
-                        //console.log(document.getElementById("map"));
-
-                        /* const map = new google.maps.Map(mapDivRef, {
-                            zoom: 4,
-                            center: uluru,
-                        });
-                        // The marker, positioned at Uluru
-                        const marker = new google.maps.Marker({
-                            position: uluru,
-                            map: map,
-                        }); */
                     }
-                },
-                mounted() {
-                    // Add enter key event listener for 'Enter' key search
-                    window.gmapsCallback = () => this.initGoogleMap;
+                })
 
-                    if (this.showSearch) {
-                        document.getElementById("contentTypeSearchInput")
-                            .addEventListener("keyup", function (event) {
-                                event.preventDefault();
-                                if (event.keyCode === 13) {
-                                    document.getElementById("contentTypeSearchBtn").click();
-                                }
-                            });
-                        window.addEventListener('keydown', function (e) {
-                            if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e
-                                .keyCode ==
-                                13) {
-                                if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
-                                    e.preventDefault();
-                                    return false;
-                                }
-                            }
-                        }, true);
-                    }
-                    this.resetSearch();
-                    this.generateCategoryOptions();
-                    // Add category buttons
-
-                }
-            })
-
-        })();
+            })();
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap&v=weekly" async></script>
 </body>
 
 </html>
