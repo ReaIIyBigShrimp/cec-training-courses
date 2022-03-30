@@ -145,9 +145,9 @@
                     class="ranger-event-card card card-item flex-md-row align-items-center">
                     <!--<img class="card-img-top" v-bind:src="'https://www.cheshireeast.gov.uk/' + item.image.asset.sys.uri" >-->
                     <div class="col-12 col-md-4 thumbnail-container d-flex justify-content-center">
-                        <!-- <img class="img-thumbnail img-fluid mt-4 m-md-2"
+                        <img v-if="item.image != null" class="img-thumbnail img-fluid mt-4 m-md-2"
                             v-bind:src="'https://www.cheshireeast.gov.uk/' + item.image.asset.sys.uri + '?width=225&height=150&fit=crop,center'"
-                            v-bind:alt="item.title"> -->
+                            v-bind:alt="item.title">
                     </div>
 
 
@@ -187,7 +187,8 @@
                 <div class="selected-item-details">
                     <div class="row">
                         <div class="col-12">
-                            <img class="rounded mx-auto d-block featured-img"
+
+                            <img v-if="selectedItem.image != null" class="rounded mx-auto d-block featured-img"
                                 v-bind:src="'https://www.cheshireeast.gov.uk/' + selectedItem.image.asset.sys.uri"
                                 v-bind:alt="selectedItem.title">
                             <hr>
